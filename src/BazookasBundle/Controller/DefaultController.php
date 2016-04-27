@@ -5,10 +5,7 @@ namespace BazookasBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use BazookasBundle\Form\CollectionItemType;
-use BazookasBundle\Entity\CollectionItem;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -24,10 +21,23 @@ class DefaultController extends Controller
     /**
      * @Route("/meliform")
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
         $collectionItemType = new CollectionItemType();
         $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item = json_encode($form->getData());
+
+            var_dump($item);
+            exit();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($item);
+            $em->flush();
+        }
 
         return $this->render('BazookasBundle:Default:index.html.twig', array('form' => $form->createView()));
     }
