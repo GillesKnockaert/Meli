@@ -8,9 +8,7 @@ use BazookasBundle\Form\CollectionItemType;
 use BazookasBundle\Entity\CollectionItem;
 use BazookasBundle\Form\MediaType;
 use BazookasBundle\Entity\Media;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -26,10 +24,39 @@ class DefaultController extends Controller
     /**
      * @Route("/collectionitem")
      */
-    public function collectionItemAction()
+    public function collectionItemAction(Request $request)
     {
         $collectionItemType = new CollectionItemType();
         $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $collectionItem = new CollectionItem();
+            $collectionItem->setTitleNL($data["titleNL"]);
+            $collectionItem->setTitleFR($data["titleFR"]);
+            $collectionItem->setDescriptionNL($data["descriptionNL"]);
+            $collectionItem->setDescriptionFR($data["descriptionFR"]);
+            $collectionItem->setImageURL($data["imageURL"]);
+            $collectionItem->setCategoryID($data["categoryID"]->getId());
+            $collectionItem->setYear($data["year"]);
+            $collectionItem->setType($data["type"]);
+            $collectionItem->setMustShowDate($data["mustShowDate"]);
+            $collectionItem->setPositionX($data["positionX"]);
+            $collectionItem->setPositionY($data["positionY"]);
+            $collectionItem->setYearFrom($data["yearFrom"]);
+            $collectionItem->setYearTill($data["yearTill"]);
+            $collectionItem->setColumnID($data["columnID"]);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($collectionItem);
+            $em->flush();
+
+            return $this->redirect('media');
+        }
+
 
         return $this->render('BazookasBundle:Default:index.html.twig', array('form' => $form->createView()));
     }
