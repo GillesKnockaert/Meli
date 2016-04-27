@@ -26,9 +26,36 @@ input{
   border-radius: 3px;
 }
 label{
+  vertical-align: top;;
   display: inline-block;
   width: 150px;
   text-align: left;
+}
+textarea{
+  padding: 5px;
+  border: solid 1px #aaaaaa;
+  width: 200px;
+  height: 50px;
+  border-radius: 3px;
+  resize: vertical;
+}
+select{
+  padding: 5px;
+  border: solid 1px #aaaaaa;
+  width: 200px;
+  border-radius: 3px;
+}
+#form_mustShowDate{
+  display: inline-block;
+  width: 200px;
+}
+#form_mustShowDate input{
+  display: inline-block;
+  width: 20px;
+}
+#form_mustShowDate label{
+  display: inline-block;
+  width: 50px;
 }
 button{
   display: inline-block;
