@@ -6,7 +6,7 @@ ehthumbs.db
 Desktop.ini
 
 # ignore var folder
-*/var/*
+var/
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
