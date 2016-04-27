@@ -5343,10 +5343,14 @@ $this->useLocking = $useLocking;
 }
 public function close()
 {
-if (is_resource($this->stream)) {
+if ($this->url && is_resource($this->stream)) {
 fclose($this->stream);
 }
 $this->stream = null;
+}
+public function getStream()
+{
+return $this->stream;
 }
 protected function write(array $record)
 {
@@ -5579,6 +5583,11 @@ protected $recordsByLevel = array();
 public function getRecords()
 {
 return $this->records;
+}
+public function clear()
+{
+$this->records = array();
+$this->recordsByLevel = array();
 }
 protected function hasRecordRecords($level)
 {
