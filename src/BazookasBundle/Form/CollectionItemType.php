@@ -21,19 +21,24 @@ class CollectionItemType extends AbstractType
     {
         $builder
             ->add('titleNL', TextType::class, array(
-                    'label' => 'Title NL'
+                    'label' => 'Title NL',
+                    'required' => false
                 ))
             ->add('titleFR', TextType::class, array(
-                    'label' => 'Title FR'
+                    'label' => 'Title FR',
+                    'required' => false
                 ))
             ->add('descriptionNL', TextareaType::class, array(
-                    'label' => 'Description NL'
+                    'label' => 'Description NL',
+                    'required' => false
                 ))
             ->add('descriptionFR', TextareaType::class, array(
-                    'label' => 'Description FR'
+                    'label' => 'Description FR',
+                    'required' => false
                 ))
             ->add('imageURL', TextType::class, array(
-                    'label' => 'Image URL'
+                    'label' => 'Image URL',
+                    'required' => false
                 ))
             ->add('categoryID', EntityType::class, array(
                     'class' => 'BazookasBundle:Category',
@@ -41,7 +46,8 @@ class CollectionItemType extends AbstractType
                     'choice_label' => 'nameNL'
                 ))
             ->add('year', IntegerType::class, array(
-                    'label' => 'Year'
+                    'label' => 'Year',
+                    'required' => false
                 ))
             ->add('type', ChoiceType::class, array(
                     'choices' => array(
@@ -62,19 +68,24 @@ class CollectionItemType extends AbstractType
                     'data' => 1
                 ))
             ->add('positionX', IntegerType::class, array(
-                    'label' => 'Position X'
+                    'label' => 'Position X',
+                    'required' => false
                 ))
             ->add('positionY', IntegerType::class, array(
-                    'label' => 'Position Y'
+                    'label' => 'Position Y',
+                    'required' => false
                 ))
             ->add('yearFrom', IntegerType::class, array(
-                    'label' => 'Year From'
+                    'label' => 'Year From',
+                    'required' => false
                 ))
             ->add('yearTill', IntegerType::class, array(
-                    'label' => 'Year Till'
+                    'label' => 'Year Till',
+                    'required' => false
                 ))
             ->add('columnID', IntegerType::class, array(
-                    'label' => 'Column ID'
+                    'label' => 'Column ID',
+                    'required' => false
                 ));
 
         return $builder->getForm();

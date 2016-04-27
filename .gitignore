@@ -8,6 +8,9 @@ Desktop.ini
 # ignore var folder
 var/
 
+# parameters.yml file
+app/config/parameters.yml
+
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
