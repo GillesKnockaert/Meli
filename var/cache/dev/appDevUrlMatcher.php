@@ -101,7 +101,11 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         // bazookas_default_index
-        if ($pathinfo === '/bb') {
+        if (rtrim($pathinfo, '/') === '') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'bazookas_default_index');
+            }
+
             return array (  '_controller' => 'BazookasBundle\\Controller\\DefaultController::indexAction',  '_route' => 'bazookas_default_index',);
         }
 

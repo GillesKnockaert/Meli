@@ -5,11 +5,15 @@ namespace BazookasBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use BazookasBundle\Form\CollectionItemType;
+use BazookasBundle\Entity\CollectionItem;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DefaultController extends Controller
 {
     /**
-     * @Route("/bb")
+     * @Route("/")
      */
     public function indexAction()
     {
@@ -22,14 +26,10 @@ class DefaultController extends Controller
      */
     public function newAction()
     {
-      $form = $this->createFormBuilder()
-       ->add('task', TextType::class)
-       ->add('dueDate', DateType::class)
-       ->add('save', SubmitType::class, array('label' => 'Create Task'))
-       ->getForm();
+        $collectionItemType = new CollectionItemType();
+        $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
 
-
-        return $this->render('BazookasBundle:Default:form.html.twig', array('form' => $form));
+        return $this->render('BazookasBundle:Default:form.html.twig', array('form' => $form->createView()));
     }
 
 }

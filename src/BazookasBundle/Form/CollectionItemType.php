@@ -28,8 +28,9 @@ class CollectionItemType extends AbstractType
             ->add('positionY')
             ->add('yearFrom')
             ->add('yearTill')
-            ->add('columnID')
-        ;
+            ->add('columnID');
+
+        return $builder->getForm();
     }
     
     /**
