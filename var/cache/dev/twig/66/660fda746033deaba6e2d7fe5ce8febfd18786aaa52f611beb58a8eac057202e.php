@@ -15,14 +15,21 @@ class __TwigTemplate_f306ff161a0139483e4c9b8a84debb532c07f59902cee0fb49d914870e5
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $__internal_91d3a2f607fe77e46fd7d22503fd30a65b1437bfa2767ad53d249ad7cb3bd225 = $this->env->getExtension("native_profiler");
-        $__internal_91d3a2f607fe77e46fd7d22503fd30a65b1437bfa2767ad53d249ad7cb3bd225->enter($__internal_91d3a2f607fe77e46fd7d22503fd30a65b1437bfa2767ad53d249ad7cb3bd225_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "BazookasBundle:Default:index.html.twig"));
+        $__internal_cb49ded7d0878e7c3b0076845a17bb59fa3cdee597fb7cad7db7429ce49d7d4d = $this->env->getExtension("native_profiler");
+        $__internal_cb49ded7d0878e7c3b0076845a17bb59fa3cdee597fb7cad7db7429ce49d7d4d->enter($__internal_cb49ded7d0878e7c3b0076845a17bb59fa3cdee597fb7cad7db7429ce49d7d4d_prof = new Twig_Profiler_Profile($this->getTemplateName(), "template", "BazookasBundle:Default:index.html.twig"));
 
         // line 1
-        echo "Hello World!
+        echo         $this->env->getExtension('form')->renderer->renderBlock((isset($context["form"]) ? $context["form"] : $this->getContext($context, "form")), 'form_start');
+        echo "
 ";
+        // line 2
+        echo $this->env->getExtension('form')->renderer->searchAndRenderBlock((isset($context["form"]) ? $context["form"] : $this->getContext($context, "form")), 'widget');
+        echo "
+";
+        // line 3
+        echo         $this->env->getExtension('form')->renderer->renderBlock((isset($context["form"]) ? $context["form"] : $this->getContext($context, "form")), 'form_end');
         
-        $__internal_91d3a2f607fe77e46fd7d22503fd30a65b1437bfa2767ad53d249ad7cb3bd225->leave($__internal_91d3a2f607fe77e46fd7d22503fd30a65b1437bfa2767ad53d249ad7cb3bd225_prof);
+        $__internal_cb49ded7d0878e7c3b0076845a17bb59fa3cdee597fb7cad7db7429ce49d7d4d->leave($__internal_cb49ded7d0878e7c3b0076845a17bb59fa3cdee597fb7cad7db7429ce49d7d4d_prof);
 
     }
 
@@ -31,10 +38,16 @@ class __TwigTemplate_f306ff161a0139483e4c9b8a84debb532c07f59902cee0fb49d914870e5
         return "BazookasBundle:Default:index.html.twig";
     }
 
+    public function isTraitable()
+    {
+        return false;
+    }
+
     public function getDebugInfo()
     {
-        return array (  22 => 1,);
+        return array (  30 => 3,  26 => 2,  22 => 1,);
     }
 }
-/* Hello World!*/
-/* */
+/* {{ form_start(form) }}*/
+/* {{ form_widget(form) }}*/
+/* {{ form_end(form) }}*/

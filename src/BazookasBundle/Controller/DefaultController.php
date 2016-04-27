@@ -29,7 +29,7 @@ class DefaultController extends Controller
         $collectionItemType = new CollectionItemType();
         $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
 
-        return $this->render('BazookasBundle:Default:form.html.twig', array('form' => $form->createView()));
+        return $this->render('BazookasBundle:Default:index.html.twig', array('form' => $form->createView()));
     }
 
 }
