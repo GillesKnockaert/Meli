@@ -1,7 +1,7 @@
 bazookas:
     resource: "@BazookasBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /meli
 
 app:
     resource: "@AppBundle/Controller/"
