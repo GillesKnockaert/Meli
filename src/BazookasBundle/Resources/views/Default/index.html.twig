@@ -1,9 +1,11 @@
-<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+{% extends 'BazookasBundle:Layout:layout.html.twig' %}
 
-<h1>Meli</h1>
-<hr>
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<button type="submit" value="Submit">Submit</button>
-<button type="reset" value="Reset">Reset</button>
-{{ form_end(form) }}
+{% block content %}
+  <h1>Meli</h1>
+  <hr>
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  <button type="submit" value="Submit">Submit</button>
+  <button type="reset" value="Reset">Reset</button>
+  {{ form_end(form) }}
+{% endblock %}
