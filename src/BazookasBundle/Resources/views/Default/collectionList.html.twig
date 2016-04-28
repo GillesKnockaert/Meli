@@ -1,48 +1,44 @@
-{% extends 'BazookasBundle:Layout:layout.html.twig' %}
+<table>
+	<tr>
+		<th>ID</th>
+		<th>Title NL</th>
+		<th>Title FR</th>
+		<th>Description NL</th>
+		<th>Description FR</th>
+		<th>Image URL</th>
+		<th>Category ID</th>
+		<th>Year</th>
+		<th>Type</th>
+		<th>Must show date</th>
+		<th>Position X</th>
+		<th>Position Y</th>
+		<th>Year from</th>
+		<th>Year till</th>
+		<th>Column ID</th>
+		<th>Actions</th>
+	</tr>
 
-{% block content %}
-  <table>
-      <tr>
-          <th>ID</th>
-          <th>Title NL</th>
-          <th>Title FR</th>
-          <th>Description NL</th>
-          <th>Description FR</th>
-          <th>Image URL</th>
-          <th>Category ID</th>
-          <th>Year</th>
-          <th>Type</th>
-          <th>Must show date</th>
-          <th>Position X</th>
-          <th>Position Y</th>
-          <th>Year from</th>
-          <th>Year till</th>
-          <th>Column ID</th>
-          <th>Actions</th>
-      </tr>
+	{% for item in items %}
+	   <tr>
+	   		<td>{{ item.id }}</td>
+	   		<td>{{ item.titleNL }}</td>
+	   		<td>{{ item.titleFR }}</td>
+	   		<td>{{ item.descriptionNL }}</td>
+	   		<td>{{ item.descriptionFR }}</td>
+	   		<td>{{ item.imageURL }}</td>
+	   		<td>{{ item.categoryID }}</td>
+	   		<td>{{ item.year }}</td>
+	   		<td>{{ item.type }}</td>
+	   		<td>{{ item.mustShowDate }}</td>
+	   		<td>{{ item.positionX }}</td>
+	   		<td>{{ item.positionY }}</td>
+	   		<td>{{ item.yearFrom }}</td>
+	   		<td>{{ item.yearTill }}</td>
+	   		<td>{{ item.columnID }}</td>
+	   		<td><a href="/meli/collectionitem/edit/{{ item.id }}">edit</a> 
+	   			| <a href="/meli/collectionitem/delete/{{ item.id }}">delete</a></td>
+	   </tr>
+	{% endfor %}
+</table>
 
-      {% for item in items %}
-         <tr>
-                 <td>{{ item.id }}</td>
-                 <td>{{ item.titleNL }}</td>
-                 <td>{{ item.titleFR }}</td>
-                 <td>{{ item.descriptionNL }}</td>
-                 <td>{{ item.descriptionFR }}</td>
-                 <td>{{ item.imageURL }}</td>
-                 <td>{{ item.categoryID }}</td>
-                 <td>{{ item.year }}</td>
-                 <td>{{ item.type }}</td>
-                 <td>{{ item.mustShowDate }}</td>
-                 <td>{{ item.positionX }}</td>
-                 <td>{{ item.positionY }}</td>
-                 <td>{{ item.yearFrom }}</td>
-                 <td>{{ item.yearTill }}</td>
-                 <td>{{ item.columnID }}</td>
-                 <td><a href="/meli/collectionitem/edit/{{ item.id }}">edit</a>
-                     | <a href="/meli/collectionitem/delete/{{ item.id }}">delete</a></td>
-         </tr>
-      {% endfor %}
-  </table>
-
-  <a href="/meli/collectionitem/add">Add</a>
-{% endblock %}
+<a href="/meli/collectionitem/add">Add</a>
