@@ -3,12 +3,13 @@
 namespace BazookasBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as assert;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * CollectionItem
  *
- * @ORM\Table(name="collection_item")
+ * @ORM\Table(name="tblCollectionItem")
  * @ORM\Entity(repositoryClass="BazookasBundle\Repository\CollectionItemRepository")
  */
 class CollectionItem
@@ -121,6 +122,11 @@ class CollectionItem
      * @ORM\Column(name="columnID", type="integer")
      */
     private $columnID;
+
+    /**
+     * @Assert\File(mimeTypes={"image/png"})
+     */
+    private $file;
 
 
     /**
@@ -467,5 +473,62 @@ class CollectionItem
     public function getColumnID()
     {
         return $this->columnID;
+    }
+
+    /**
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    //File upload functions
+    public function getAbsoluteImageURL()
+    {
+        return null === $this->imageURL
+            ? null
+            : $this->getUploadRootDir().'/'.$this->imageURL;
+    }
+
+    public function getWebImageURL()
+    {
+        return null === $this->imageURL
+            ? null
+            : $this->getUploadDir().'/'.$this->imageURL;
+    }
+
+    protected function getUploadRootDir()
+    {
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        return 'Media/Timeline';
+    }
+
+    public function uploadImage()
+    {
+        if ($this->getFile() === null) {
+            return;
+        }
+
+        $this->getFile()->move(
+            $this->getUploadRootDir(),
+            $this->getFile()->getClientOriginalName()
+        );
+
+        $this->imageURL = $this->getUploadDir().'/'.$this->getFile()->getClientOriginalName();
+
+        $this->file = null;
     }
 }

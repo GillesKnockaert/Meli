@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class CollectionItemType extends AbstractType
@@ -21,71 +22,64 @@ class CollectionItemType extends AbstractType
     {
         $builder
             ->add('titleNL', TextType::class, array(
-                    'label' => 'Title NL',
+                    'label' => 'Titel Nederlands',
                     'required' => false
                 ))
             ->add('titleFR', TextType::class, array(
-                    'label' => 'Title FR',
+                    'label' => 'Titel Frans',
                     'required' => false
                 ))
             ->add('descriptionNL', TextareaType::class, array(
-                    'label' => 'Description NL',
+                    'label' => 'Beschrijving Nederlands',
                     'required' => false
                 ))
             ->add('descriptionFR', TextareaType::class, array(
-                    'label' => 'Description FR',
+                    'label' => 'Beschrijving Frans',
                     'required' => false
                 ))
-            ->add('imageURL', TextType::class, array(
-                    'label' => 'Image URL',
+            ->add('file', FileType::class, array(
+                    'label' => 'Afbeelding',
                     'required' => false
                 ))
             ->add('categoryID', EntityType::class, array(
                     'class' => 'BazookasBundle:Category',
-                    'label' => 'Category',
+                    'label' => 'Categorie',
                     'choice_label' => 'nameNL'
                 ))
             ->add('year', IntegerType::class, array(
-                    'label' => 'Year',
-                    'required' => false
-                ))
-            ->add('type', ChoiceType::class, array(
-                    'choices' => array(
-                            'Media' => 'media',
-                            'Tijdssprong' => 'tijdssprong',
-                            'Nieuwe map' => 'nieuwe_map',
-                        ),
-                    'label' => 'Type'
+                    'label' => 'Jaar',
+                    'required' => false,
+                    'attr' => array('min' => 0)
                 ))
             ->add('mustShowDate', ChoiceType::class, array(
                     'choices' => array(
-                            'Yes' => 1,
-                            'No' => 0
+                            'Ja' => 1,
+                            'Nee' => 0
                         ),
-                    'label' => 'Show date?',
+                    'label' => 'Toon datum?',
                     'expanded' => true,
                     'multiple' => false,
                     'data' => 1
                 ))
             ->add('positionX', IntegerType::class, array(
-                    'label' => 'Position X',
+                    'label' => 'Positie X',
                     'required' => false
                 ))
             ->add('positionY', IntegerType::class, array(
-                    'label' => 'Position Y',
+                    'label' => 'Positie Y',
                     'required' => false
                 ))
             ->add('yearFrom', IntegerType::class, array(
-                    'label' => 'Year From',
-                    'required' => false
+                    'label' => 'Jaar van',
+                    'required' => false,
+                    'data' => 1950,
+                    'attr' => array('min' => 1930, 'max' => 2000)
                 ))
             ->add('yearTill', IntegerType::class, array(
-                    'label' => 'Year Till',
-                    'required' => false
-                ))
-            ->add('columnID', IntegerType::class, array(
-                    'label' => 'Column ID',
-                    'required' => false
+                    'label' => 'Jaar tot',
+                    'required' => false,
+                    'data' => 1980,
+                    'attr' => array('min' => 1930, 'max' => 2000)
                 ));
 
         return $builder->getForm();

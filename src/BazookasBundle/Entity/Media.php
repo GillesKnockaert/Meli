@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Media
  *
- * @ORM\Table(name="media")
+ * @ORM\Table(name="tblMedia")
  * @ORM\Entity(repositoryClass="BazookasBundle\Repository\MediaRepository")
  */
 class Media

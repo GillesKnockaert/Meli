@@ -20,6 +20,11 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('collectionID', EntityType::class, array(
+                    'class' => 'BazookasBundle:CollectionItem',
+                    'label' => 'Collection item',
+                    'choice_label' => 'titleNL'
+                ))
             ->add('titleNL', TextType::class, array(
                   'label' => 'Title NL'
               ))
@@ -36,7 +41,7 @@ class MediaType extends AbstractType
                     'choices' => array(
                             'Audio' => 'audio',
                             'Video' => 'video',
-                            'Tekst' => 'tekst',
+                            'Foto' => 'foto',
                         ),
                     'label' => 'Type'
                 ))
@@ -45,9 +50,8 @@ class MediaType extends AbstractType
                 ))
             ->add('contentURLFR', TextType::class, array(
                     'label' => 'Content url FR'
-                ))
-            //->add('collectionID')
-        ;
+                ));
+
         return $builder->getForm();
     }
 
