@@ -10,6 +10,11 @@ use BazookasBundle\Form\MediaType;
 use BazookasBundle\Entity\Media;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\Response;
+use \ZipArchive;
+use \RecursiveDirectoryIterator;
+use \RecursiveIteratorIterator;
 
 class MainController extends Controller
 {
@@ -24,26 +29,27 @@ class MainController extends Controller
 
 
     /**
-     * @Route("/collectionitem/list/{columns}", defaults={"columns" = 0}, name="Collectionitem")
+     * @Route("/collectionitem/list", name="CollectionitemList")
      */
-    public function collectionItemListAction($columns) {
-        if ($columns == 0) {
-            $columns = intval($this->getNumberOfColumns());
-        }
+    public function itemListAction() {
+        $columnTypes = $this->getColumnTypes();
 
         $repository = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem');
         $collectionItems = $repository->findAll();
 
         return $this->render('BazookasBundle:Default:collectionList.html.twig', 
-          array('columns' => $columns, 'items' => $collectionItems));
+          array('highestColumn' => intval($this->getHighestColumnID()), 'columns' => $columnTypes, 'items' => $collectionItems));
     }
 
 
     /**
-     * @Route("/collectionitem/add/{column}")
+     * @Route("/collectionitem/add/{toColumn}", defaults={"toColumn" = 0})
      */
-    public function collectionItemAddAction(Request $request, $column) {
+    public function collectionItemAddAction(Request $request, $toColumn) {
         $collectionItemType = new CollectionItemType();
+        if ($toColumn == 0) {
+            $toColumn = intval($this->getHighestColumnID()) + 1;
+        }
         $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
 
         $form->handleRequest($request);
@@ -52,9 +58,9 @@ class MainController extends Controller
             $data = $form->getData();
 
             $collectionItem = new CollectionItem();
-            $collectionItem = $this->setCollectionItemProperties($collectionItem, $data, $column);
+            $collectionItem = $this->setCollectionItemProperties($collectionItem, $data, $toColumn);
 
-            $collectionItem->uploadImage();
+            $collectionItem->uploadImage('media');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($collectionItem);
@@ -63,7 +69,7 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Nieuw item in kolom '.$column ,'form' => $form->createView()));
+          array('title' => 'Nieuw item in kolom '.$toColumn ,'form' => $form->createView()));
     }
 
     /**
@@ -83,7 +89,7 @@ class MainController extends Controller
             $data = $form->getData();
 
             $item = $this->setCollectionItemProperties($item, $data, $item->getColumnID());
-            $item->uploadImage();
+            $item->uploadImage('media');
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();
@@ -95,40 +101,17 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/collectionitem/delete/{id}")
-     */
-    public function collectionItemDeleteAction($id) {
-        $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
- 
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($item);
-        $em->flush();
- 
-        return $this->redirect('/meli/collectionitem/list');
-    }
-
-    /**
     * @Route("/timejump/add")
     */
     public function timejumpAddAction(Request $request) {
         $collectionItem = new CollectionItem();
-        $form = $this->createFormBuilder($collectionItem)
-                     ->add('yearFrom', IntegerType::class, array(
-                          'label' => 'Jaar van',
-                          'required' => true,
-                          'attr' => array('min' => 0)
-                      ))
-                     ->add('yearTill', IntegerType::class, array(
-                          'label' => 'Jaar tot',
-                          'required' => true
-                      ))
-                     ->getForm();
+        $form = $this->buildTimejumpForm($collectionItem);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $collectionItem->setType('tijdssprong');
-            $collectionItem->setColumnID(intval($this->getNumberOfColumns()) + 1);
+            $collectionItem->setColumnID(intval($this->getHighestColumnID()) + 1);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($collectionItem);
@@ -144,18 +127,84 @@ class MainController extends Controller
     * @Route("/timejump/edit/{id}")
     */
     public function timejumpEditAction(Request $request, $id) {
+        $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
 
+        $form = $this->buildTimejumpForm($item);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $this->redirect('/meli/collectionitem/list');
+        }
+        return $this->render('BazookasBundle:Default:form.html.twig', 
+          array('title' => 'Pas item aan' ,'form' => $form->createView()));
     }
 
     /**
-    * @Route("/timejump/delete/{id}")
+    * @Route("/map/add")
     */
-    public function timejumpDeleteAction($id) {
+    public function mapAddAction(Request $request) {
+        $collectionItem = new CollectionItem();
+        $form = $this->buildMapForm($collectionItem);
 
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $collectionItem->setType('map');
+            $collectionItem->setColumnID(intval($this->getHighestColumnID()) + 1);
+
+            $collectionItem->uploadImage('map');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($collectionItem);
+            $em->flush();
+
+            return $this->redirect('/meli/collectionitem/list');
+        }
+        return $this->render('BazookasBundle:Default:form.html.twig', 
+          array('title' => 'Nieuwe map' ,'form' => $form->createView()));
     }
 
     /**
-     * @Route("/media/list", name="Media")
+    * @Route("/map/edit/{id}")
+    */
+    public function mapEditAction(Request $request, $id) {
+        $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
+
+        $form = $this->buildMapForm($item);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item->uploadImage('map');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $this->redirect('/meli/collectionitem/list');
+        }
+        return $this->render('BazookasBundle:Default:form.html.twig', 
+          array('title' => 'Pas item aan' ,'form' => $form->createView()));
+    }
+
+    /**
+    * @Route("/item/delete/{id}")
+    */
+    public function itemDeleteAction($id) {
+        $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
+ 
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($item);
+        $em->flush();
+ 
+        return $this->redirect('/meli/collectionitem/list');
+    }
+
+    /**
+     * @Route("/media/list", name="MediaList")
      */
     public function mediaListAction()
     {
@@ -181,40 +230,120 @@ class MainController extends Controller
             $media = new Media();
             $media = $this->setMediaProperties($media, $data);
 
+            $media->uploadImages();
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($media);
             $em->flush();
 
-            return $this->redirect('/meli/media/list');
+            return $this->redirect('/meli/media/add');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', array('title' => 'New media' ,'form' => $form->createView()));
+        return $this->render('BazookasBundle:Default:form.html.twig', array('title' => 'Nieuwe media' ,'form' => $form->createView()));
     }
 
     /**
      * @Route("/media/edit/{id}")
      */
-    public function mediaEditAction()
+    public function mediaEditAction(Request $request, $id)
     {
+        $item = $this->getDoctrine()->getRepository('BazookasBundle:Media')->find($id);
+
         $mediaType = new MediaType();
         $form = $mediaType->buildForm($this->createFormBuilder(), array());
 
-        return $this->render('BazookasBundle:Default:form.html.twig', array('form' => $form->createView()));
+        $form = $this->fillMediaForm($form, $item);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $item = $this->setMediaProperties($item, $data);
+            $item->uploadImages();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $this->redirect('/meli/media/list');
+        }
+        return $this->render('BazookasBundle:Default:form.html.twig', 
+          array('title' => 'Pas media aan' ,'form' => $form->createView()));
     }
 
     /**
      * @Route("/media/delete/{id}")
      */
-    public function mediaDeleteAction() {
-
+    public function mediaDeleteAction($id) {
+        $item = $this->getDoctrine()->getRepository('BazookasBundle:Media')->find($id);
+ 
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($item);
+        $em->flush();
+ 
+        return $this->redirect('/meli/media/list');
     }
 
-    private function getNumberOfColumns() {
-      $em = $this->getDoctrine()->getManager();
-      return $em->createQueryBuilder()
-                ->select('MAX(c.columnID)')
-                ->from('BazookasBundle:CollectionItem', 'c')
-                ->getQuery()
-                ->getSingleScalarResult();
+    /**
+    * @Route("/export", name="ExportFiles")
+    */
+    public function exportFiles() {
+        $rootPath = realpath('Media');
+
+        // Initialize archive object
+        $zip = new \ZipArchive();
+        $zip->open('Media.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        // Create recursive directory iterator
+        /** @var SplFileInfo[] $files */
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($rootPath),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $name => $file)
+        {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir())
+            {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        // Zip archive will be created only after closing object
+        $zip->close();
+
+        $response = new Response();
+        $response->headers->set('Content-type', 'application/zip');
+        $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', 'Media.zip'));
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->setContent(file_get_contents('Media.zip'));
+
+        return $response;
+    }
+
+    private function getHighestColumnID() {
+        $em = $this->getDoctrine()->getManager();
+        return $em->createQueryBuilder()
+                  ->select('MAX(c.columnID)')
+                  ->from('BazookasBundle:CollectionItem', 'c')
+                  ->getQuery()
+                  ->getSingleScalarResult();
+    }
+
+    private function getColumnTypes() {
+        $em = $this->getDoctrine()->getManager();
+        return $em->createQueryBuilder()
+                  ->select('c.columnID, c.type')
+                  ->from('BazookasBundle:CollectionItem', 'c')
+                  ->distinct()
+                  ->addOrderBy('c.columnID', 'ASC')
+                  ->getQuery()
+                  ->getResult();
     }
 
     private function setCollectionItemProperties($item, $data, $column = null) {
@@ -242,8 +371,8 @@ class MainController extends Controller
         $media->setDescriptionNL($data["descriptionNL"]);
         $media->setDescriptionFR($data["descriptionFR"]);
         $media->setType($data["type"]);
-        $media->setContentURLNL($data["contentURLNL"]);
-        $media->setContentURLFR($data["contentURLFR"]);
+        $media->setFileNL($data["fileNL"]);
+        $media->setFileFR($data["fileFR"]);
         $media->setCollectionID($data["collectionID"]->getId());
 
         return $media;
@@ -263,5 +392,49 @@ class MainController extends Controller
         $form->get('yearTill')->setData($item->getYearTill());
 
         return $form;
+    }
+
+    private function fillMediaForm($form, $media) {
+        $form->get('titleNL')->setData($media->getTitleNL());
+        $form->get('titleFR')->setData($media->getTitleFR());
+        $form->get('descriptionNL')->setData($media->getDescriptionNL());
+        $form->get('descriptionFR')->setData($media->getDescriptionFR());
+        $form->get('type')->setData($media->getType());
+
+        return $form;
+    }
+
+    private function buildTimejumpForm($item) {
+        return $this->createFormBuilder($item)
+                    ->add('yearFrom', IntegerType::class, array(
+                         'label' => 'Jaar van',
+                         'required' => true,
+                         'attr' => array('min' => 1930, 'max' => 2000)
+                     ))
+                    ->add('yearTill', IntegerType::class, array(
+                         'label' => 'Jaar tot',
+                         'required' => true,
+                         'attr' => array('min' => 1930, 'max' => 2000)
+                     ))
+                    ->getForm();
+    }
+
+    private function buildMapForm($item) {
+        return $this->createFormBuilder($item)
+                    ->add('file', FileType::class, array(
+                        'label' => 'Afbeelding',
+                        'required' => true
+                    ))
+                    ->add('yearFrom', IntegerType::class, array(
+                        'label' => 'Jaar van',
+                        'required' => true,
+                        'attr' => array('min' => 1930, 'max' => 2000)
+                      ))
+                    ->add('yearTill', IntegerType::class, array(
+                        'label' => 'Jaar tot',
+                        'required' => true,
+                        'attr' => array('min' => 1930, 'max' => 2000)
+                      ))
+                    ->getForm();
     }
 }

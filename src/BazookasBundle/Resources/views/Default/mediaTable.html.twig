@@ -1,0 +1,29 @@
+<table>
+	<tr>
+		<th>Titel Nederlands</th>
+		<th>Titel Frans</th>
+		<th>Categorie</th>
+		<th>Jaar</th>
+		<th>Type</th>
+		<th>Acties</th>
+	</tr>
+
+	{% for item in items %}
+		{% if item.columnID == columnIndex %}
+		   <tr>
+		   		<td>{{ item.titleNL }}</td>
+		   		<td>{{ item.titleFR }}</td>
+		   		<td>{{ item.categoryID }}</td>
+		   		<td>{{ item.year }}</td>
+		   		<td>{{ item.type }}</td>
+		   		<td><a href="/meli/collectionitem/edit/{{ item.id }}">aanpassen</a> 
+		   			| <a href="/meli/item/delete/{{ item.id }}" 
+		   				 onclick="return confirm('Wil je dit item zeker verwijderen?');">verwijderen</a></td>
+		   </tr>
+	   	{% endif %}
+	{% endfor %}
+</table>
+
+{# TODO: remove this button when column has 5 items #}
+<br>
+<a href="/meli/collectionitem/add/{{ columnIndex }}">Voeg item toe</a>

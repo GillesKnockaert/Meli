@@ -27,8 +27,11 @@
               </div>
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                  <li><a href={{ path('Collectionitem') }}>Collectie items</a></li>
-                  <li><a href={{ path('Media') }}>Media</a></li>
+                  <li><a href={{ path('CollectionitemList') }}>Collectie items</a></li>
+                  <li><a href={{ path('MediaList') }}>Media</a></li>
+                  {% if (path(app.request.attributes.get('_route')) == '/meli/') %}
+                    <li><a href={{ path('ExportFiles') }}>Export bestanden</a></li>
+                  {% endif %}
                 </ul>
               </div><!--/.nav-collapse -->
             </div>

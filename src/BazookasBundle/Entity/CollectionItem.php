@@ -124,7 +124,7 @@ class CollectionItem
     private $columnID;
 
     /**
-     * @Assert\File(mimeTypes={"image/png"})
+     * @Assert\File(mimeTypes={"image/png", "image/jpeg"})
      */
     private $file;
 
@@ -492,42 +492,46 @@ class CollectionItem
     }
 
     //File upload functions
-    public function getAbsoluteImageURL()
+    public function getAbsoluteImageURL($type)
     {
         return null === $this->imageURL
             ? null
-            : $this->getUploadRootDir().'/'.$this->imageURL;
+            : $this->getUploadRootDir($type).'/'.$this->imageURL;
     }
 
-    public function getWebImageURL()
+    public function getWebImageURL($type)
     {
         return null === $this->imageURL
             ? null
-            : $this->getUploadDir().'/'.$this->imageURL;
+            : $this->getUploadDir($type).'/'.$this->imageURL;
     }
 
-    protected function getUploadRootDir()
+    protected function getUploadRootDir($type)
     {
-        return __DIR__.'/../../../web/'.$this->getUploadDir();
+        return __DIR__.'/../../../web/'.$this->getUploadDir($type);
     }
 
-    protected function getUploadDir()
+    protected function getUploadDir($type)
     {
-        return 'Media/Timeline';
+        if ($type == 'media') {
+            return 'Media/Timeline';
+        } else if ($type == 'map') {
+            return 'Media/Maps';
+        }
     }
 
-    public function uploadImage()
+    public function uploadImage($type)
     {
         if ($this->getFile() === null) {
             return;
         }
 
         $this->getFile()->move(
-            $this->getUploadRootDir(),
+            $this->getUploadRootDir($type),
             $this->getFile()->getClientOriginalName()
         );
 
-        $this->imageURL = $this->getUploadDir().'/'.$this->getFile()->getClientOriginalName();
+        $this->imageURL = $this->getUploadDir($type).'/'.$this->getFile()->getClientOriginalName();
 
         $this->file = null;
     }

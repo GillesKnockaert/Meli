@@ -9,7 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use BazookasBundle\Repository\CollectionItemRepository;
 
 class MediaType extends AbstractType
 {
@@ -22,20 +24,30 @@ class MediaType extends AbstractType
         $builder
             ->add('collectionID', EntityType::class, array(
                     'class' => 'BazookasBundle:CollectionItem',
-                    'label' => 'Collection item',
-                    'choice_label' => 'titleNL'
+                    'label' => 'Collectie item',
+                    'choice_label' => 'titleNL',
+                    'query_builder' => function(CollectionItemRepository $cir) {
+                        return $cir->createQueryBuilder('c')
+                                   ->orderBy('c.columnID', 'ASC')
+                                   ->where('c.type = :type')
+                                   ->setParameter('type', "media");
+                        }
                 ))
             ->add('titleNL', TextType::class, array(
-                  'label' => 'Title NL'
+                  'label' => 'Titel Nederlands',
+                  'required' => false
               ))
             ->add('titleFR', TextType::class, array(
-                    'label' => 'Title FR'
+                    'label' => 'Titel Frans',
+                    'required' => false
                 ))
             ->add('descriptionNL', TextareaType::class, array(
-                    'label' => 'Description NL'
+                    'label' => 'Beschrijving Nederlands',
+                    'required' => false
                 ))
             ->add('descriptionFR', TextareaType::class, array(
-                    'label' => 'Description FR'
+                    'label' => 'Beschrijving Frans',
+                    'required' => false
                 ))
             ->add('type', ChoiceType::class, array(
                     'choices' => array(
@@ -45,11 +57,13 @@ class MediaType extends AbstractType
                         ),
                     'label' => 'Type'
                 ))
-            ->add('contentURLNL', TextType::class, array(
-                    'label' => 'Content url NL'
+            ->add('fileNL', FileType::class, array(
+                    'label' => 'Media Nederlands',
+                    'required' => false
                 ))
-            ->add('contentURLFR', TextType::class, array(
-                    'label' => 'Content url FR'
+            ->add('fileFR', FileType::class, array(
+                    'label' => 'Media Frans',
+                    'required' => false
                 ));
 
         return $builder->getForm();

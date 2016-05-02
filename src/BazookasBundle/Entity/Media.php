@@ -3,6 +3,8 @@
 namespace BazookasBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Media
@@ -77,6 +79,16 @@ class Media
      * @ORM\ManyToOne(targetEntity="CollectionItem", inversedBy="id")
      */
     private $collectionID;
+
+    /**
+     * @Assert\File(mimeTypes={"image/png", "image/jpeg", "audio/mpeg3", "video/mp4"})
+     */
+    private $fileNL;
+
+    /**
+     * @Assert\File(mimeTypes={"image/png", "image/jpeg", "audio/mpeg3", "video/mp4"})
+     */
+    private $fileFR;
 
 
     /**
@@ -279,5 +291,98 @@ class Media
     public function getCollectionID()
     {
         return $this->collectionID;
+    }
+
+    /**
+     * @param UploadedFile $file
+     */
+    public function setFileNL(UploadedFile $file = null)
+    {
+        $this->fileNL = $file;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFileNL()
+    {
+        return $this->fileNL;
+    }
+
+    /**
+     * @param UploadedFile $file
+     */
+    public function setFileFR(UploadedFile $file = null)
+    {
+        $this->fileFR = $file;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFileFR()
+    {
+        return $this->fileFR;
+    }
+
+    //File upload functions
+    public function getAbsoluteImageURL($file)
+    {
+        return null === $this->imageURL
+            ? null
+            : $this->getUploadRootDir($file).'/'.$this->imageURL;
+    }
+
+    public function getWebImageURL($file)
+    {
+        return null === $this->imageURL
+            ? null
+            : $this->getUploadDir($file).'/'.$this->imageURL;
+    }
+
+    protected function getUploadRootDir($file)
+    {
+        return __DIR__.'/../../../web/'.$this->getUploadDir($file);
+    }
+
+    protected function getUploadDir($file)
+    {
+        $path = 'Media/Detail/';
+        $type = $this->getType();
+
+        if ($type == 'foto') {
+            $path .= 'Images';
+        } else if ($type == 'audio') {
+            $path .= 'Audio';
+        } else if ($type == 'video') {
+            $path .= 'Video';
+        }
+
+        return $path;
+    }
+
+    public function uploadImages()
+    {
+        if ($this->getFileNL() !== null) {
+            $this->getFileNL()->move(
+                $this->getUploadRootDir($this->getFileNL()),
+                $this->getFileNL()->getClientOriginalName()
+            );
+
+            $this->contentURLNL = $this->getUploadDir($this->getFileNL()).'/'.$this->getFileNL()->getClientOriginalName();
+
+            $this->fileNL = null;
+        }
+
+        if ($this->getFileFR() !== null) {
+            $this->getFileFR()->move(
+                $this->getUploadRootDir($this->getFileFR()),
+                $this->getFileFR()->getClientOriginalName()
+            );
+
+            $this->contentURLFR = $this->getUploadDir($this->getFileFR()).'/'.$this->getFileFR()->getClientOriginalName();
+
+            $this->fileFR = null;
+        }
     }
 }

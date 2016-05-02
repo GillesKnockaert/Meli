@@ -1,0 +1,23 @@
+<table>
+	<tr>
+		<th>Afbeelding URL</th>
+		<th>Jaar van</th>
+		<th>Jaar tot</th>
+		<th>Type</th>
+		<th>Acties</th>
+	</tr>
+
+	{% for item in items %}
+		{% if item.columnID == columnIndex %}
+		   <tr>
+		   		<td>{{ item.imageURL }}</td>
+		   		<td>{{ item.yearFrom }}</td>
+		   		<td>{{ item.yearTill }}</td>
+		   		<td>{{ item.type }}</td>
+		   		<td><a href="/meli/map/edit/{{ item.id }}">aanpassen</a> 
+		   			| <a href="/meli/item/delete/{{ item.id }}" 
+		   				 onclick="return confirm('Wil je dit item zeker verwijderen?');">verwijderen</a></td>
+		   </tr>
+	   	{% endif %}
+	{% endfor %}
+</table>

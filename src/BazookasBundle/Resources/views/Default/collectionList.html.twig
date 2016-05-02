@@ -1,45 +1,23 @@
 {% extends 'BazookasBundle:Layout:layout.html.twig' %}
 
 {% block content %}
+	{% if columns != 0 %}
+		{% for column in columns %}
+			{% if (column.type == 'media') %}
+				{% include 'BazookasBundle:Default:mediaTable.html.twig' with {'items': items, 'columnIndex': column.columnID} %}
 
-{% if columns != 0 %}
-	{% for i in 1..columns %}
-		<table>
-			<tr>
-				<th>Titel Nederlands</th>
-				<th>Titel Frans</th>
-				<th>Categorie</th>
-				<th>Jaar</th>
-				<th>Type</th>
-				<th>Acties</th>
-			</tr>
+			{% elseif (column.type == 'tijdssprong') %}
+				{% include 'BazookasBundle:Default:timejumpTable.html.twig' with {'items': items, 'columnIndex': column.columnID} %}
 
-			{% for item in items %}
-				{% if item.columnID == i %}
-				   <tr>
-				   		<td>{{ item.titleNL }}</td>
-				   		<td>{{ item.titleFR }}</td>
-				   		<td>{{ item.categoryID }}</td>
-				   		<td>{{ item.year }}</td>
-				   		<td>{{ item.type }}</td>
-				   		<td><a href="/meli/collectionitem/edit/{{ item.id }}">aanpassen</a> 
-				   			| <a href="/meli/collectionitem/delete/{{ item.id }}" 
-				   				 onclick="return confirm('Wil je dit item zeker verwijderen?');">verwijderen</a></td>
-				   </tr>
-			   	{% endif %}
-			{% endfor %}
-		</table>
+			{% elseif (column.type == 'map') %}
+				{% include 'BazookasBundle:Default:mapTable.html.twig' with {'items': items, 'columnIndex': column.columnID} %}
+			{% endif %}
 
-		{# TODO: remove this button when column has 5 items #}
-		<br>
-		<a href="/meli/collectionitem/add/{{ i }}">Voeg item toe</a>
+			<br><br><br>
+		{% endfor %}
+	{% endif %}
 
-		<br><br><br>
-	{% endfor %}
-{% endif %}
-
-<a href="/meli/collectionitem/list/{{ columns + 1 }}">Voeg kolom toe</a> |
-<a href="/meli/timejump/add">Voeg tijdssprong toe</a> |
-<a href="#">Voeg nieuwe map toe</a>
-
+	<a href="/meli/collectionitem/add">Voeg collectie item toe aan nieuwe kolom</a> |
+	<a href="/meli/timejump/add">Voeg tijdssprong toe</a> |
+	<a href="/meli/map/add">Voeg nieuwe map toe</a>
 {% endblock %}
