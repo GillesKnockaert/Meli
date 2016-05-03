@@ -230,7 +230,7 @@ class MainController extends Controller
             $media = new Media();
             $media = $this->setMediaProperties($media, $data);
 
-            $media->uploadImages();
+            $media->uploadFiles();
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($media);
@@ -259,7 +259,7 @@ class MainController extends Controller
             $data = $form->getData();
 
             $item = $this->setMediaProperties($item, $data);
-            $item->uploadImages();
+            $item->uploadFiles();
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();

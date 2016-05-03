@@ -5,6 +5,7 @@ namespace BazookasBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use FFMpeg;
 
 /**
  * Media
@@ -361,7 +362,7 @@ class Media
         return $path;
     }
 
-    public function uploadImages()
+    public function uploadFiles()
     {
         if ($this->getFileNL() !== null) {
             $this->getFileNL()->move(
@@ -370,6 +371,10 @@ class Media
             );
 
             $this->contentURLNL = $this->getUploadDir($this->getFileNL()).'/'.$this->getFileNL()->getClientOriginalName();
+
+            if ($this->getType() == 'video') {
+                $this->createThumbnail($this->getFileNL());
+            }
 
             $this->fileNL = null;
         }
@@ -382,7 +387,31 @@ class Media
 
             $this->contentURLFR = $this->getUploadDir($this->getFileFR()).'/'.$this->getFileFR()->getClientOriginalName();
 
+            if ($this->getType() == 'video') {
+                $this->createThumbnail($this->getFileFR());
+            }
+
             $this->fileFR = null;
         }
+    }
+
+    private function createThumbnail($file) {
+        // get filename without extension
+        $thumbname = $file->getClientOriginalName();
+        $thumbname = explode('.', $thumbname);
+        array_pop($thumbname);
+        $thumbname = implode('.', $thumbname);
+
+        $ffmpeg = FFMpeg\FFMpeg::create(array(
+            'ffmpeg.binaries'  => __DIR__.'/../../../ffmpeg/bin/ffmpeg.exe',
+            'ffprobe.binaries' => __DIR__.'/../../../ffmpeg/bin/ffprobe.exe',
+            'timeout'          => 3600, // The timeout for the underlying process
+            'ffmpeg.threads'   => 12,   // The number of threads that FFMpeg should use
+        ));
+
+        $video = $ffmpeg->open($this->getUploadRootDir($file).'/'.$file->getClientOriginalName());
+        
+        $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(5))
+              ->save(__DIR__.'/../../../web/Media/Thumb/Video/'.$thumbname.'.jpg');
     }
 }
