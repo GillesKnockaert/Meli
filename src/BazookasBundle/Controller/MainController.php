@@ -10,6 +10,7 @@ use BazookasBundle\Form\MediaType;
 use BazookasBundle\Entity\Media;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Response;
 use \ZipArchive;
@@ -353,7 +354,7 @@ class MainController extends Controller
         $item->setDescriptionNL($data["descriptionNL"]);
         $item->setDescriptionFR($data["descriptionFR"]);
         $item->setFile($data["file"]);
-        $item->setCategoryID($data["categoryID"]->getId());
+        $item->setCategory($data["categoryID"]);
         $item->setYear($data["year"]);
         $item->setType('media');
         $item->setMustShowDate($data["mustShowDate"]);
@@ -384,7 +385,7 @@ class MainController extends Controller
         $form->get('titleFR')->setData($item->getTitleFR());
         $form->get('descriptionNL')->setData($item->getDescriptionNL());
         $form->get('descriptionFR')->setData($item->getDescriptionFR());
-        $form->get('categoryID')->setData($item->getCategoryID());
+        $form->get('categoryID')->setData($item->getCategory());
         $form->get('year')->setData($item->getYear());
         $form->get('mustShowDate')->setData($item->getMustShowDate());
         $form->get('positionX')->setData($item->getPositionX());
@@ -407,16 +408,18 @@ class MainController extends Controller
 
     private function buildTimejumpForm($item) {
         return $this->createFormBuilder($item)
-                    ->add('yearFrom', IntegerType::class, array(
-                         'label' => 'Jaar van',
-                         'required' => true,
-                         'attr' => array('min' => 1930, 'max' => 2000)
-                     ))
-                    ->add('yearTill', IntegerType::class, array(
-                         'label' => 'Jaar tot',
-                         'required' => true,
-                         'attr' => array('min' => 1930, 'max' => 2000)
-                     ))
+                    ->add('yearFrom', ChoiceType::class, array(
+                          'label' => 'Jaar van',
+                          'required' => true,
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
+                          'data' => 1930
+                      ))
+                    ->add('yearTill', ChoiceType::class, array(
+                          'label' => 'Jaar tot',
+                          'required' => true,
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
+                          'data' => 2000
+                      ))
                     ->getForm();
     }
 
@@ -426,15 +429,17 @@ class MainController extends Controller
                         'label' => 'Afbeelding',
                         'required' => true
                     ))
-                    ->add('yearFrom', IntegerType::class, array(
-                        'label' => 'Jaar van',
-                        'required' => true,
-                        'attr' => array('min' => 1930, 'max' => 2000)
+                    ->add('yearFrom', ChoiceType::class, array(
+                          'label' => 'Jaar van',
+                          'required' => true,
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
+                          'data' => 1930
                       ))
-                    ->add('yearTill', IntegerType::class, array(
-                        'label' => 'Jaar tot',
-                        'required' => true,
-                        'attr' => array('min' => 1930, 'max' => 2000)
+                    ->add('yearTill', ChoiceType::class, array(
+                          'label' => 'Jaar tot',
+                          'required' => true,
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
+                          'data' => 2000
                       ))
                     ->getForm();
     }

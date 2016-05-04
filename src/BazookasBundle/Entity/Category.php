@@ -3,6 +3,7 @@
 namespace BazookasBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Category
@@ -12,13 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Category
 {
+    public function __construct() {
+        $this->collectionItems = new ArrayCollection();
+    }
+
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\OneToMany(targetEntity="CollectionItem", mappedBy="categoryID", cascade={"persist", "remove"})
      */
     private $id;
 
@@ -63,6 +67,11 @@ class Category
      * @ORM\Column(name="endColor", type="string", length=10, nullable=true)
      */
     private $endColor;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CollectionItem", mappedBy="category", cascade={"persist", "remove"})
+     */
+    private $collectionItems;
 
 
     /**
@@ -217,5 +226,29 @@ class Category
     public function getEndColor()
     {
         return $this->endColor;
+    }
+
+    public function getCollectionItems() 
+    {
+        return $this->collectionItems;
+    }
+
+    public function setCollectionItems($items) 
+    {
+        $this->collectionItems = $items;
+    }
+
+    public function addCollectionItem($item) 
+    {
+        $item->setCategory($this);
+        $this->collectionItems->add($item);
+        return $this;
+    }
+
+    public function removeCollectionItem($item) 
+    {
+        $item->setCategory(null);
+        $this->collectionItems->removeElement($item);
+        return $this;
     }
 }

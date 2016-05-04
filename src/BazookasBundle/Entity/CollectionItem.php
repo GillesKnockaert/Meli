@@ -61,12 +61,10 @@ class CollectionItem
     private $imageURL;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="categoryID", type="integer", nullable=true)
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="collectionItems")
+     * @ORM\JoinColumn(name="categoryID", referencedColumnName="id")
      */
-    private $categoryID;
+    private $category;
 
     /**
      * @var int
@@ -125,7 +123,10 @@ class CollectionItem
     private $columnID;
 
     /**
-     * @Assert\File(mimeTypes={"image/png", "image/jpeg"})
+     * @Assert\File(
+     *     mimeTypes = {"image/png", "image/jpeg", "image/bmp"},
+     *     mimeTypesMessage = "Geldige bestandstypes: png, jpg, bmp"
+     * )
      */
     private $file;
 
@@ -261,27 +262,27 @@ class CollectionItem
     }
 
     /**
-     * Set categoryID
+     * Set category
      *
-     * @param integer $categoryID
+     * @param Category $category
      *
      * @return CollectionItem
      */
-    public function setCategoryID($categoryID)
+    public function setCategory($category)
     {
-        $this->categoryID = $categoryID;
+        $this->category = $category;
 
         return $this;
     }
 
     /**
-     * Get categoryID
+     * Get category
      *
-     * @return int
+     * @return Category
      */
-    public function getCategoryID()
+    public function getCategory()
     {
-        return $this->categoryID;
+        return $this->category;
     }
 
     /**

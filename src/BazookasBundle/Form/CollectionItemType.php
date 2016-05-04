@@ -39,17 +39,17 @@ class CollectionItemType extends AbstractType
                 ))
             ->add('file', FileType::class, array(
                     'label' => 'Afbeelding',
-                    'required' => false
+                    'required' => true
                 ))
             ->add('categoryID', EntityType::class, array(
                     'class' => 'BazookasBundle:Category',
                     'label' => 'Categorie',
                     'choice_label' => 'nameNL'
                 ))
-            ->add('year', IntegerType::class, array(
+            ->add('year', ChoiceType::class, array(
                     'label' => 'Jaar',
-                    'required' => false,
-                    'attr' => array('min' => 0)
+                    'required' => true,
+                    'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                 ))
             ->add('mustShowDate', ChoiceType::class, array(
                     'choices' => array(
@@ -69,17 +69,17 @@ class CollectionItemType extends AbstractType
                     'label' => 'Positie Y',
                     'required' => false
                 ))
-            ->add('yearFrom', IntegerType::class, array(
+            ->add('yearFrom', ChoiceType::class, array(
                     'label' => 'Jaar van',
-                    'required' => false,
-                    'data' => 1950,
-                    'attr' => array('min' => 1930, 'max' => 2000)
+                    'required' => true,
+                    'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
+                    'data' => 1930
                 ))
-            ->add('yearTill', IntegerType::class, array(
+            ->add('yearTill', ChoiceType::class, array(
                     'label' => 'Jaar tot',
-                    'required' => false,
-                    'data' => 1980,
-                    'attr' => array('min' => 1930, 'max' => 2000)
+                    'required' => true,
+                    'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
+                    'data' => 2000
                 ));
 
         return $builder->getForm();
