@@ -60,7 +60,7 @@ class MainController extends Controller
             $collectionItem = new CollectionItem();
             $collectionItem = $this->setCollectionItemProperties($collectionItem, $data, $toColumn);
 
-            $collectionItem->uploadImage('media');
+            $collectionItem->uploadImage();
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($collectionItem);
@@ -89,7 +89,7 @@ class MainController extends Controller
             $data = $form->getData();
 
             $item = $this->setCollectionItemProperties($item, $data, $item->getColumnID());
-            $item->uploadImage('media');
+            $item->uploadImage();
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();
@@ -154,9 +154,10 @@ class MainController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $collectionItem->setType('map');
+            $collectionItem->setMustShowDate(0);
             $collectionItem->setColumnID(intval($this->getHighestColumnID()) + 1);
 
-            $collectionItem->uploadImage('map');
+            $collectionItem->uploadImage();
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($collectionItem);
@@ -179,7 +180,7 @@ class MainController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $item->uploadImage('map');
+            $item->uploadImage();
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();

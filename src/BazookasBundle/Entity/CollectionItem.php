@@ -5,6 +5,7 @@ namespace BazookasBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use BazookasBundle\Helper\MediaUtils;
 
 /**
  * CollectionItem
@@ -492,46 +493,24 @@ class CollectionItem
     }
 
     //File upload functions
-    public function getAbsoluteImageURL($type)
-    {
-        return null === $this->imageURL
-            ? null
-            : $this->getUploadRootDir($type).'/'.$this->imageURL;
-    }
-
-    public function getWebImageURL($type)
-    {
-        return null === $this->imageURL
-            ? null
-            : $this->getUploadDir($type).'/'.$this->imageURL;
-    }
-
-    protected function getUploadRootDir($type)
-    {
-        return __DIR__.'/../../../web/'.$this->getUploadDir($type);
-    }
-
-    protected function getUploadDir($type)
-    {
-        if ($type == 'media') {
-            return 'Media/Timeline';
-        } else if ($type == 'map') {
-            return 'Media/Maps';
-        }
-    }
-
-    public function uploadImage($type)
+    public function uploadImage()
     {
         if ($this->getFile() === null) {
             return;
         }
 
+        $mediaUtils = new MediaUtils();
+
         $this->getFile()->move(
-            $this->getUploadRootDir($type),
+            $mediaUtils->getUploadRootDir($this->getType()),
             $this->getFile()->getClientOriginalName()
         );
 
-        $this->imageURL = $this->getUploadDir($type).'/'.$this->getFile()->getClientOriginalName();
+        if ($mediaUtils->getExtension($this->getFile()) == 'bmp') {
+            //conversion
+        }
+
+        $this->imageURL = $mediaUtils->getUploadDir($this->getType()).'/'.$this->getFile()->getClientOriginalName();
 
         $this->file = null;
     }

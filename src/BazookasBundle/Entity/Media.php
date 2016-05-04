@@ -5,7 +5,7 @@ namespace BazookasBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use FFMpeg;
+use BazookasBundle\Helper\MediaUtils;
 
 /**
  * Media
@@ -326,54 +326,21 @@ class Media
         return $this->fileFR;
     }
 
-    //File upload functions
-    public function getAbsoluteImageURL($file)
-    {
-        return null === $this->imageURL
-            ? null
-            : $this->getUploadRootDir($file).'/'.$this->imageURL;
-    }
-
-    public function getWebImageURL($file)
-    {
-        return null === $this->imageURL
-            ? null
-            : $this->getUploadDir($file).'/'.$this->imageURL;
-    }
-
-    protected function getUploadRootDir($file)
-    {
-        return __DIR__.'/../../../web/'.$this->getUploadDir($file);
-    }
-
-    protected function getUploadDir($file)
-    {
-        $path = 'Media/Detail/';
-        $type = $this->getType();
-
-        if ($type == 'foto') {
-            $path .= 'Images';
-        } else if ($type == 'audio') {
-            $path .= 'Audio';
-        } else if ($type == 'video') {
-            $path .= 'Video';
-        }
-
-        return $path;
-    }
-
+    //file upload function
     public function uploadFiles()
     {
+        $mediaUtils = new MediaUtils();
+
         if ($this->getFileNL() !== null) {
             $this->getFileNL()->move(
-                $this->getUploadRootDir($this->getFileNL()),
+                $mediaUtils->getUploadRootDir($this->getType()),
                 $this->getFileNL()->getClientOriginalName()
             );
 
-            $this->contentURLNL = $this->getUploadDir($this->getFileNL()).'/'.$this->getFileNL()->getClientOriginalName();
+            $this->contentURLNL = $mediaUtils->getUploadDir($this->getType()).'/'.$this->getFileNL()->getClientOriginalName();
 
             if ($this->getType() == 'video') {
-                $this->createThumbnail($this->getFileNL());
+                $mediaUtils->createThumbnail($this->getFileNL());
             }
 
             $this->fileNL = null;
@@ -381,37 +348,17 @@ class Media
 
         if ($this->getFileFR() !== null) {
             $this->getFileFR()->move(
-                $this->getUploadRootDir($this->getFileFR()),
+                $mediaUtils->getUploadRootDir($this->getType()),
                 $this->getFileFR()->getClientOriginalName()
             );
 
-            $this->contentURLFR = $this->getUploadDir($this->getFileFR()).'/'.$this->getFileFR()->getClientOriginalName();
+            $this->contentURLFR = $mediaUtils->getUploadDir($this->getType()).'/'.$this->getFileFR()->getClientOriginalName();
 
             if ($this->getType() == 'video') {
-                $this->createThumbnail($this->getFileFR());
+                $mediaUtils->createThumbnail($this->getFileFR());
             }
 
             $this->fileFR = null;
         }
-    }
-
-    private function createThumbnail($file) {
-        // get filename without extension
-        $thumbname = $file->getClientOriginalName();
-        $thumbname = explode('.', $thumbname);
-        array_pop($thumbname);
-        $thumbname = implode('.', $thumbname);
-
-        $ffmpeg = FFMpeg\FFMpeg::create(array(
-            'ffmpeg.binaries'  => __DIR__.'/../../../ffmpeg/bin/ffmpeg.exe',
-            'ffprobe.binaries' => __DIR__.'/../../../ffmpeg/bin/ffprobe.exe',
-            'timeout'          => 3600, // The timeout for the underlying process
-            'ffmpeg.threads'   => 12,   // The number of threads that FFMpeg should use
-        ));
-
-        $video = $ffmpeg->open($this->getUploadRootDir($file).'/'.$file->getClientOriginalName());
-        
-        $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(5))
-              ->save(__DIR__.'/../../../web/Media/Thumb/Video/'.$thumbname.'.jpg');
     }
 }
