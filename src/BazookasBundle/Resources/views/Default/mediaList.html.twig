@@ -26,5 +26,9 @@
 </table>
 <br><br><br>
 
-<a href="/meli/media/add">Voeg media toe</a>
+{% if (collectionCount > 0) %}
+	<a href="/meli/media/add">Voeg media toe</a>
+{% else %}
+	<p>Er kunnen geen media items worden toegevoegd zonder collectie items van het type 'media'.</p>
+{% endif %}
 {% endblock %}

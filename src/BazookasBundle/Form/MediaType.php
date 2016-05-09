@@ -25,13 +25,20 @@ class MediaType extends AbstractType
             ->add('collectionID', EntityType::class, array(
                     'class' => 'BazookasBundle:CollectionItem',
                     'label' => 'Collectie item',
-                    'choice_label' => 'titleNL',
+                    'choice_label' => function($collectionItem) {
+                        if ($collectionItem->getTitleNL() !== null) {
+                            return $collectionItem->getTitleNL();
+                        } else {
+                            return $collectionItem->getTitleFR();
+                        }
+                    },
                     'query_builder' => function(CollectionItemRepository $cir) {
                         return $cir->createQueryBuilder('c')
                                    ->orderBy('c.columnID', 'ASC')
                                    ->where('c.type = :type')
                                    ->setParameter('type', "media");
-                        }
+                        },
+                    'required' => true
                 ))
             ->add('titleNL', TextType::class, array(
                   'label' => 'Titel Nederlands',

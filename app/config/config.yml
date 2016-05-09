@@ -39,6 +39,15 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
        - 'bootstrap_3_layout.html.twig'
+       - 'BazookasBundle:Form:fields.html.twig'
+
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~
+    assets:
+        jquery: %kernel.root_dir%/../vendor/components/jquery/jquery.min.js
 
 # Doctrine Configuration
 doctrine:

@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use BazookasBundle\Form\MapType;
+use Doctrine\ORM\EntityManager;
 
 class CollectionItemType extends AbstractType
 {
@@ -18,6 +20,13 @@ class CollectionItemType extends AbstractType
      * @param FormBuilderInterface $builder
      * @param array $options
      */
+
+    private $em;
+
+    public function __construct(EntityManager $em) {
+        $this->em = $em;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -61,13 +70,13 @@ class CollectionItemType extends AbstractType
                     'multiple' => false,
                     'data' => 1
                 ))
-            ->add('positionX', IntegerType::class, array(
-                    'label' => 'Positie X',
-                    'required' => false
-                ))
-            ->add('positionY', IntegerType::class, array(
-                    'label' => 'Positie Y',
-                    'required' => false
+            ->add('map', MapType::class, array(
+                    'label' => 'Selecteer map',
+                    'required' => false,
+                    'choices' => $this->getMaps(),
+                    'choice_value' => function ($choice) {
+                        return $choice;
+                    },
                 ))
             ->add('yearFrom', ChoiceType::class, array(
                     'label' => 'Jaar van',
@@ -93,5 +102,22 @@ class CollectionItemType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'BazookasBundle\Entity\CollectionItem'
         ));
+    }
+
+    private function getMaps() {
+        $maps = array();
+        $result = $this->em->createQueryBuilder()
+                  ->select('c.imageURL, c.yearFrom, c.yearTill')
+                  ->from('BazookasBundle:CollectionItem', 'c')
+                  ->where('c.type = :type')
+                  ->setParameter('type', "map")
+                  ->getQuery()
+                  ->getResult();
+        
+        foreach ($result as $key => $value) {
+            $maps[$value['yearFrom'].' - '.$value['yearTill']] = $value['imageURL'];
+        }
+
+        return $maps;
     }
 }

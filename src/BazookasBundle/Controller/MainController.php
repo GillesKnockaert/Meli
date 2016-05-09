@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use \ZipArchive;
 use \RecursiveDirectoryIterator;
 use \RecursiveIteratorIterator;
@@ -47,7 +48,7 @@ class MainController extends Controller
      * @Route("/collectionitem/add/{toColumn}", defaults={"toColumn" = 0})
      */
     public function collectionItemAddAction(Request $request, $toColumn) {
-        $collectionItemType = new CollectionItemType();
+        $collectionItemType = new CollectionItemType($this->getDoctrine()->getEntityManager());
         if ($toColumn == 0) {
             $toColumn = intval($this->getHighestColumnID()) + 1;
         }
@@ -79,7 +80,7 @@ class MainController extends Controller
      public function collectionItemEditAction(Request $request, $id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
 
-        $collectionItemType = new CollectionItemType();
+        $collectionItemType = new CollectionItemType($this->getDoctrine()->getEntityManager());
         $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
 
         $form = $this->fillCollectionItemForm($form, $item);
@@ -155,7 +156,6 @@ class MainController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $collectionItem->setType('map');
-            $collectionItem->setMustShowDate(0);
             $collectionItem->setColumnID(intval($this->getHighestColumnID()) + 1);
 
             $collectionItem->uploadImage();
@@ -213,7 +213,8 @@ class MainController extends Controller
         $repository = $this->getDoctrine()->getRepository('BazookasBundle:Media');
         $mediaItems = $repository->findAll();
 
-        return $this->render('BazookasBundle:Default:mediaList.html.twig', array('items' => $mediaItems));
+        return $this->render('BazookasBundle:Default:mediaList.html.twig', 
+          array('items' => $mediaItems, 'collectionCount' => $this->getCollectionItemsCount()));
     }
 
     /**
@@ -328,6 +329,17 @@ class MainController extends Controller
         return $response;
     }
 
+    private function getCollectionItemsCount() {
+        $em = $this->getDoctrine()->getManager();
+        return $em->createQueryBuilder()
+                  ->select('COUNT(c)')
+                  ->from('BazookasBundle:CollectionItem', 'c')
+                  ->where('c.type = :type')
+                  ->setParameter('type', 'media')
+                  ->getQuery()
+                  ->getSingleScalarResult();
+    }
+
     private function getHighestColumnID() {
         $em = $this->getDoctrine()->getManager();
         return $em->createQueryBuilder()
@@ -358,11 +370,14 @@ class MainController extends Controller
         $item->setYear($data["year"]);
         $item->setType('media');
         $item->setMustShowDate($data["mustShowDate"]);
-        $item->setPositionX($data["positionX"]);
-        $item->setPositionY($data["positionY"]);
         $item->setYearFrom($data["yearFrom"]);
         $item->setYearTill($data["yearTill"]);
         $item->setColumnID($column);
+
+        if ($_POST['posX'] !== "" && $_POST['posY'] !== "") {
+            $item->setPositionX($_POST['posX']);
+            $item->setPositionY($_POST['posY']);
+        }
 
         return $item;
     }
@@ -375,7 +390,7 @@ class MainController extends Controller
         $media->setType($data["type"]);
         $media->setFileNL($data["fileNL"]);
         $media->setFileFR($data["fileFR"]);
-        $media->setCollectionID($data["collectionID"]->getId());
+        $media->setCollectionID($data["collectionID"]);
 
         return $media;
     }
@@ -388,8 +403,6 @@ class MainController extends Controller
         $form->get('categoryID')->setData($item->getCategory());
         $form->get('year')->setData($item->getYear());
         $form->get('mustShowDate')->setData($item->getMustShowDate());
-        $form->get('positionX')->setData($item->getPositionX());
-        $form->get('positionY')->setData($item->getPositionY());
         $form->get('yearFrom')->setData($item->getYearFrom());
         $form->get('yearTill')->setData($item->getYearTill());
 
@@ -411,14 +424,12 @@ class MainController extends Controller
                     ->add('yearFrom', ChoiceType::class, array(
                           'label' => 'Jaar van',
                           'required' => true,
-                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
-                          'data' => 1930
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                       ))
                     ->add('yearTill', ChoiceType::class, array(
                           'label' => 'Jaar tot',
                           'required' => true,
-                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
-                          'data' => 2000
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                       ))
                     ->getForm();
     }
@@ -432,14 +443,12 @@ class MainController extends Controller
                     ->add('yearFrom', ChoiceType::class, array(
                           'label' => 'Jaar van',
                           'required' => true,
-                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
-                          'data' => 1930
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                       ))
                     ->add('yearTill', ChoiceType::class, array(
                           'label' => 'Jaar tot',
                           'required' => true,
-                          'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
-                          'data' => 2000
+                          'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                       ))
                     ->getForm();
     }

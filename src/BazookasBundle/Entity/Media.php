@@ -76,8 +76,8 @@ class Media
     /**
      * @var int
      *
-     * @ORM\Column(name="collectionID", type="integer")
      * @ORM\ManyToOne(targetEntity="CollectionItem", inversedBy="id")
+     * @ORM\JoinColumn(name="collectionID", referencedColumnName="id", onDelete="CASCADE")
      */
     private $collectionID;
 

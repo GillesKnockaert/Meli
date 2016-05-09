@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use BazookasBundle\Helper\MediaUtils;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * CollectionItem
@@ -56,7 +57,7 @@ class CollectionItem
     /**
      * @var string
      *
-     * @ORM\Column(name="imageURL", type="string", length=100)
+     * @ORM\Column(name="imageURL", type="string", length=100, nullable=true)
      */
     private $imageURL;
 
@@ -83,7 +84,7 @@ class CollectionItem
     /**
      * @var bool
      *
-     * @ORM\Column(name="mustShowDate", type="boolean")
+     * @ORM\Column(name="mustShowDate", type="boolean", nullable=true)
      */
     private $mustShowDate;
 
@@ -124,11 +125,13 @@ class CollectionItem
 
     /**
      * @Assert\File(
-     *     mimeTypes = {"image/png", "image/jpeg", "image/bmp"},
-     *     mimeTypesMessage = "Geldige bestandstypes: png, jpg, bmp"
+     *     mimeTypes = {"image/png", "image/jpeg"},
+     *     mimeTypesMessage = "Geldige bestandstypes: png, jpg"
      * )
      */
     private $file;
+
+    private $mapCoordinates;
 
 
     /**
@@ -482,6 +485,7 @@ class CollectionItem
      */
     public function setFile(UploadedFile $file = null)
     {
+
         $this->file = $file;
     }
 
@@ -491,6 +495,14 @@ class CollectionItem
     public function getFile()
     {
         return $this->file;
+    }
+
+    public function setMapCoordinates($coordinates) {
+        $this->mapCoordinates = $coordinates;
+    }
+
+    public function getMapCoordinates() {
+        return $this->mapCoordinates;
     }
 
     //File upload functions
@@ -506,10 +518,6 @@ class CollectionItem
             $mediaUtils->getUploadRootDir($this->getType()),
             $this->getFile()->getClientOriginalName()
         );
-
-        if ($mediaUtils->getExtension($this->getFile()) == 'bmp') {
-            //conversion
-        }
 
         $this->imageURL = $mediaUtils->getUploadDir($this->getType()).'/'.$this->getFile()->getClientOriginalName();
 
