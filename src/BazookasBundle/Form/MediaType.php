@@ -9,9 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use BazookasBundle\Repository\CollectionItemRepository;
+use BazookasBundle\Form\FileUploadType;
 
 class MediaType extends AbstractType
 {
@@ -64,11 +64,11 @@ class MediaType extends AbstractType
                         ),
                     'label' => 'Type'
                 ))
-            ->add('fileNL', FileType::class, array(
+            ->add('fileNL', FileUploadType::class, array(
                     'label' => 'Media Nederlands',
                     'required' => false
                 ))
-            ->add('fileFR', FileType::class, array(
+            ->add('fileFR', FileUploadType::class, array(
                     'label' => 'Media Frans',
                     'required' => false
                 ));

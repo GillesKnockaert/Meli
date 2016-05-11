@@ -11,9 +11,9 @@ use BazookasBundle\Entity\Media;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\File;
+use BazookasBundle\Form\FileUploadType;
 use \ZipArchive;
 use \RecursiveDirectoryIterator;
 use \RecursiveIteratorIterator;
@@ -71,7 +71,8 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Nieuw item in kolom '.$toColumn ,'form' => $form->createView()));
+          array('title' => 'Nieuw item in kolom '.$toColumn ,'form' => $form->createView(), 
+                'form_id' => 'collection_form'));
     }
 
     /**
@@ -99,7 +100,8 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Pas item aan' ,'form' => $form->createView()));
+          array('title' => 'Pas item aan' ,'form' => $form->createView(), 
+                'form_id' => 'collection_form'));
     }
 
     /**
@@ -122,7 +124,8 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Nieuwe tijdssprong' ,'form' => $form->createView()));
+          array('title' => 'Nieuwe tijdssprong' ,'form' => $form->createView(),
+                'form_id' => 'timejump_form'));
     }
 
     /**
@@ -142,7 +145,8 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Pas item aan' ,'form' => $form->createView()));
+          array('title' => 'Pas item aan' ,'form' => $form->createView(),
+                'form_id' => 'timejump_form'));
     }
 
     /**
@@ -167,7 +171,8 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Nieuwe map' ,'form' => $form->createView()));
+          array('title' => 'Nieuwe map' ,'form' => $form->createView(),
+                'form_id' => 'map_form'));
     }
 
     /**
@@ -189,7 +194,8 @@ class MainController extends Controller
             return $this->redirect('/meli/collectionitem/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Pas item aan' ,'form' => $form->createView()));
+          array('title' => 'Pas item aan' ,'form' => $form->createView(),
+                'form_id' => 'map_form'));
     }
 
     /**
@@ -241,7 +247,9 @@ class MainController extends Controller
 
             return $this->redirect('/meli/media/add');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', array('title' => 'Nieuwe media' ,'form' => $form->createView()));
+        return $this->render('BazookasBundle:Default:form.html.twig', 
+          array('title' => 'Nieuwe media' ,'form' => $form->createView(),
+                'form_id' => 'media_form'));
     }
 
     /**
@@ -270,7 +278,8 @@ class MainController extends Controller
             return $this->redirect('/meli/media/list');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Pas media aan' ,'form' => $form->createView()));
+          array('title' => 'Pas media aan' ,'form' => $form->createView(),
+                'form_id' => 'media_form'));
     }
 
     /**
@@ -447,7 +456,7 @@ class MainController extends Controller
 
     private function buildMapForm($item) {
         return $this->createFormBuilder($item)
-                    ->add('file', FileType::class, array(
+                    ->add('file', FileUploadType::class, array(
                         'label' => 'Afbeelding',
                         'required' => true
                     ))

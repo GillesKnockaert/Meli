@@ -9,9 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use BazookasBundle\Form\MapType;
+use BazookasBundle\Form\FileUploadType;
 use Doctrine\ORM\EntityManager;
 
 class CollectionItemType extends AbstractType
@@ -46,7 +46,7 @@ class CollectionItemType extends AbstractType
                     'label' => 'Beschrijving Frans',
                     'required' => false
                 ))
-            ->add('file', FileType::class, array(
+            ->add('file', FileUploadType::class, array(
                     'label' => 'Afbeelding',
                     'required' => true
                 ))

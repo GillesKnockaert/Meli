@@ -10,7 +10,7 @@
 {% endif %}
 <a href="{{ link }}">Terug naar lijst</a>
 <hr>
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'id': form_id}}) }}
 {{ form_widget(form) }}
 <button type="submit" value="Submit">Opslaan</button>
 {{ form_end(form) }}

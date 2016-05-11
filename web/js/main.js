@@ -1,18 +1,47 @@
 var canvas;
 var context;
+var imageField;
 var posXField;
 var posYField;
 
 (function ($) {
+	var form = document.querySelectorAll('form');
+	
+	if (form != null) {
+		switch (form[0].id) {
+			case 'collection_form':
+				executeCollectionItemCode();
+				break;
+			case 'map_form':
+				executeMapCode();
+				break;
+			case 'media_form':
+				executeMediaCode();
+				break;
+		}
+	}
+})()
+
+function executeCollectionItemCode() {
 	posXField = document.getElementById('posX');
 	posYField = document.getElementById('posY');
-
-	var submit = document.find('form').find(':submit');
-	console.log(submit);
+	imageField = document.getElementById('image_preview');
 
 	var mapSelect = document.getElementById('form_map');
 	mapSelect.addEventListener('change', function(e) {
 		drawImage(e.srcElement.value);
+	});
+
+	var fileField = document.getElementById('form_file');
+	fileField.addEventListener('change', function() {
+		previewFile(this, ['jpg', 'jpeg', 'png']);
+	});
+
+	document.getElementById('remove_file').addEventListener('click', function() {
+		fileField.value = "";
+		imageField.className = "hidden";
+		imageField.removeAttribute('src');
+		this.className = "hidden";
 	});
 
 	canvas = document.getElementById('mapCanvas');
@@ -27,7 +56,52 @@ var posYField;
     }, false);
 
 	drawImage(mapSelect.options[0].value);
-})()
+}
+
+function executeMapCode() {
+	imageField = document.getElementById('image_preview');
+
+	var fileField = document.getElementById('form_file');
+	fileField.addEventListener('change', function() {
+		previewFile(this, ['jpg', 'jpeg', 'png']);
+	});
+
+	document.getElementById('remove_file').addEventListener('click', function() {
+		fileField.value = "";
+		imageField.className = "hidden";
+		imageField.removeAttribute('src');
+		this.className = "hidden";
+	});
+}
+
+function executeMediaCode() {
+	imageField = document.getElementById('image_preview');
+	var fileFields = document.querySelectorAll('input[id*="file"]');
+
+	for (var i = 0; i < fileFields.length; i++) {
+		fileFields[i].addEventListener('change', function() {
+			previewFile(this, getAllowedExtensions());
+		});
+	}
+
+	var removeLinks = document.getElementsByName('remove_file');
+	console.log(removeLinks);
+	document.getElementById('remove_file').addEventListener('click', function() {
+		fileField.value = "";
+		imageField.className = "hidden";
+		imageField.removeAttribute('src');
+		this.className = "hidden";
+	});
+
+	document.getElementById('form_type').addEventListener('change', function() {
+		for (var i = 0; i < fileFields.length; i++) {
+			fileFields[i].value = "";
+		}
+		imageField.removeAttribute('src');
+		imageField.className = "hidden";
+		document.getElementById('remove_file').className = "hidden";
+	});
+}
 
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
@@ -61,4 +135,70 @@ function drawImage(imagePath, posX = null, posY = null) {
 	        context.stroke();
 		}
 	}
+}
+
+function previewFile(input, fileTypes) {
+    if (input.files && input.files[0]) {
+    	var extension = input.files[0].name.split('.').pop().toLowerCase();
+    	var isSuccess = isSuccess = fileTypes.indexOf(extension) > -1;
+
+    	if (isSuccess) {
+    		document.getElementById('remove_file').className = "";
+    		document.getElementById('error').className = "hidden";
+
+    		switch (extension) {
+    			case 'jpg':
+    			case 'jpeg':
+    			case 'png':
+    				var reader = new FileReader();
+		            reader.onload = function (e) {
+		            	imageField.className = "";
+		                imageField.setAttribute('src', e.target.result);
+		            }
+		            reader.readAsDataURL(input.files[0]);
+    				break;
+				case 'mp3':
+					imageField.removeAttribute('src');
+					imageField.className = "hidden";
+					break;
+				case 'mp4':
+					imageField.removeAttribute('src');
+					imageField.className = "hidden";
+					break;
+    		}
+    	} else {
+    		displayError(input, fileTypes);
+    	}
+    }
+}
+
+function displayError(input, allowedTypes) {
+	input.value = "";
+	imageField.removeAttribute('src');
+	imageField.className = "hidden";
+	document.getElementById('remove_file').className = "hidden";
+	var errorMessage = "Gelieve een bestand te uploaden van volgende types: ";
+	errorMessage += allowedTypes.join(", ");
+	document.getElementById('error').innerHTML = errorMessage;
+	document.getElementById('error').className = "";
+}
+
+function getAllowedExtensions() {
+	var typeSelect = document.getElementById('form_type');
+	var selectedType = typeSelect.options[typeSelect.selectedIndex].value;
+	var types = [];
+
+	switch (selectedType) {
+		case 'audio':
+			types = ['mp3'];
+			break;
+		case 'video':
+			types = ['mp4'];
+			break;
+		case 'foto':
+			types = ['jpg', 'jpeg', 'png'];
+			break;
+	}
+
+	return types;
 }

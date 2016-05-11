@@ -1,3 +1,5 @@
 services:
     app.form.map:
         class: BazookasBundle\Form\MapType
+    app.form.fileupload:
+        class: BazookasBundle\Form\FileUploadType

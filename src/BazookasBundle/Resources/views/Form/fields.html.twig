@@ -7,3 +7,12 @@
     <input type="number" step="any" id="posX" name="posX" class="hidden" />
     <input type="number" step="any" id="posY" name="posY" class="hidden" />
 {% endblock %}
+
+{% block file_upload_widget %}
+	{% spaceless %}
+		{{ block('form_widget') }}
+    	<img id="image_preview" />
+        <a id="remove_file" name="remove_file" class="hidden">Wissen</a>
+        <p id="error"></p>
+	{% endspaceless %}
+{% endblock %}
