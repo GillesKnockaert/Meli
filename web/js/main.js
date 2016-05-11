@@ -7,6 +7,9 @@ var posYField;
 	posXField = document.getElementById('posX');
 	posYField = document.getElementById('posY');
 
+	var submit = document.find('form').find(':submit');
+	console.log(submit);
+
 	var mapSelect = document.getElementById('form_map');
 	mapSelect.addEventListener('change', function(e) {
 		drawImage(e.srcElement.value);

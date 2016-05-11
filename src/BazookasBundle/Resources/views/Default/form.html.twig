@@ -2,12 +2,17 @@
 
 {% block content %}
 
-<h1>{{ title }}</h1>   {% if (title == 'Nieuwe media') %}<a href="/meli/media/list">Terug naar lijst</a>{% endif %}
+<h1>{{ title }}</h1>   
+{% if ('media' in title) %}
+	{% set link = '/meli/media/list' %}
+{% else %}
+	{% set link = '/meli/collectionitem/list' %}
+{% endif %}
+<a href="{{ link }}">Terug naar lijst</a>
 <hr>
 {{ form_start(form) }}
 {{ form_widget(form) }}
-<button type="submit" value="Submit">Versturen</button>
-<button type="reset" value="Reset">Wissen</button>
+<button type="submit" value="Submit">Opslaan</button>
 {{ form_end(form) }}
 
 {% endblock %}

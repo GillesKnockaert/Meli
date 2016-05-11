@@ -81,14 +81,12 @@ class CollectionItemType extends AbstractType
             ->add('yearFrom', ChoiceType::class, array(
                     'label' => 'Jaar van',
                     'required' => true,
-                    'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
-                    'data' => 1930
+                    'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                 ))
             ->add('yearTill', ChoiceType::class, array(
                     'label' => 'Jaar tot',
                     'required' => true,
-                    'choices' => array_combine(range(1930, 2000), range(1930, 2000)),
-                    'data' => 2000
+                    'choices' => array_combine(range(1930, 2000), range(1930, 2000))
                 ));
 
         return $builder->getForm();

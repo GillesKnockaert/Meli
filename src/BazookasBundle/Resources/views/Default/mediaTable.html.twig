@@ -18,7 +18,7 @@
 		   		<td>{{ item.type }}</td>
 		   		<td><a href="/meli/collectionitem/edit/{{ item.id }}">aanpassen</a> 
 		   			| <a href="/meli/item/delete/{{ item.id }}" 
-		   				 onclick="return confirm('Wil je dit item zeker verwijderen?');">verwijderen</a></td>
+		   				 onclick="return confirm('Wil je dit item zeker verwijderen? (Media items die hieraan gekoppeld zijn worden ook verwijderd)');">verwijderen</a></td>
 		   </tr>
 	   	{% endif %}
 	{% endfor %}

@@ -45,7 +45,7 @@ class MediaUtils {
     }
 
     public function getUploadDir($fileType) {
-        $path = 'Media/';
+        $path = 'Export/Media/';
 
         switch ($fileType) {
             case 'media':

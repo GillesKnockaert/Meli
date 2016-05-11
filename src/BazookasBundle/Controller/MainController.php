@@ -290,11 +290,13 @@ class MainController extends Controller
     * @Route("/export", name="ExportFiles")
     */
     public function exportFiles() {
-        $rootPath = realpath('Media');
+        $this->exportDatabase();
+
+        $rootPath = realpath('Export');
 
         // Initialize archive object
         $zip = new \ZipArchive();
-        $zip->open('Media.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open('Export.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // Create recursive directory iterator
         /** @var SplFileInfo[] $files */
@@ -322,11 +324,20 @@ class MainController extends Controller
 
         $response = new Response();
         $response->headers->set('Content-type', 'application/zip');
-        $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', 'Media.zip'));
+        $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', 'Export.zip'));
         $response->headers->set('Content-Transfer-Encoding', 'binary');
-        $response->setContent(file_get_contents('Media.zip'));
+        $response->setContent(file_get_contents('Export.zip'));
 
         return $response;
+    }
+
+    private function exportDatabase() {
+        $host     = $this->getParameter('database_host');
+        $user     = $this->getParameter('database_user');
+        $password = $this->getParameter('database_password');
+        $database = $this->getParameter('database_name');
+
+        exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.__DIR__.'/../../../web/Export/Database/export.sql');
     }
 
     private function getCollectionItemsCount() {
