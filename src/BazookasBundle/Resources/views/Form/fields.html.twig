@@ -11,8 +11,8 @@
 {% block file_upload_widget %}
 	{% spaceless %}
 		{{ block('form_widget') }}
-    	<img id="image_preview" />
+    	<img id="image_preview" name="image_preview" />
         <a id="remove_file" name="remove_file" class="hidden">Wissen</a>
-        <p id="error"></p>
+        <p id="error" name="error"></p>
 	{% endspaceless %}
 {% endblock %}

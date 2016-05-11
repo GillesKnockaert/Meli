@@ -12,12 +12,12 @@ img {
 	width: 300px;
 }
 
-a#remove_file {
-	background-color:#ff4d4d;
+a[id*='remove_file'] {
+	background-color:#3399ff;
 	-moz-border-radius:28px;
 	-webkit-border-radius:28px;
 	border-radius:28px;
-	border:1px solid #ff4d4d;
+	border:1px solid #3399ff;
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
@@ -26,21 +26,21 @@ a#remove_file {
 	text-decoration:none;
 	text-shadow:0px 1px 0px #2f6627;
 	text-align: center;
-	margin-top: 2%;
+	margin-top: 1%;
 	display: block;
 	width: 80px;
 }
 
-a#remove_file {
+a[id*='remove_file'] {
 	position:relative;
 	top:1px;
 }
 
-a#remove_file:hover {
+a[id*='remove_file']:hover {
 	cursor: pointer;
 }
 
-p#error {
+p[id*='error'] {
 	margin-top: 1%;
 	color: red;
 }

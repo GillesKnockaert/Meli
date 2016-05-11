@@ -1,107 +1,109 @@
-var canvas;
-var context;
-var imageField;
-var posXField;
-var posYField;
-
-(function ($) {
-	var form = document.querySelectorAll('form');
-	
-	if (form != null) {
-		switch (form[0].id) {
-			case 'collection_form':
-				executeCollectionItemCode();
-				break;
-			case 'map_form':
-				executeMapCode();
-				break;
-			case 'media_form':
-				executeMediaCode();
-				break;
-		}
-	}
-})()
-
-function executeCollectionItemCode() {
-	posXField = document.getElementById('posX');
-	posYField = document.getElementById('posY');
-	imageField = document.getElementById('image_preview');
-
+var collectionItemModule = (function() {
+	var imageField = document.getElementById('image_preview');
+	var removeLink = document.getElementById('remove_file');
 	var mapSelect = document.getElementById('form_map');
-	mapSelect.addEventListener('change', function(e) {
-		drawImage(e.srcElement.value);
-	});
-
 	var fileField = document.getElementById('form_file');
-	fileField.addEventListener('change', function() {
-		previewFile(this, ['jpg', 'jpeg', 'png']);
-	});
+	var errorField = document.getElementById('error');
+	var posXField = document.getElementById('posX');
+	var posYField = document.getElementById('posY');
+	var canvas = document.getElementById('mapCanvas');
 
-	document.getElementById('remove_file').addEventListener('click', function() {
-		fileField.value = "";
-		imageField.className = "hidden";
-		imageField.removeAttribute('src');
-		this.className = "hidden";
-	});
+	function init() {
+		mapSelect.addEventListener('change', function(e) {
+			drawImage(e.srcElement.value, canvas);
+		});
 
-	canvas = document.getElementById('mapCanvas');
-	context = canvas.getContext('2d');
+		removeLink.addEventListener('click', function() {
+			fileField.value = "";
+			imageField.className = "hidden";
+			imageField.removeAttribute('src');
+			this.className = "hidden";
+		});
 
-	canvas.addEventListener('click', function(evt) {
-        var mousePos = getMousePos(canvas, evt);
-        posXField.value = mousePos.x;
-        posYField.value = mousePos.y;
+		fileField.addEventListener('change', function() {
+			previewFile(this, imageField, removeLink, errorField, ['jpg', 'jpeg', 'png']);
+		});
 
-        drawImage(mapSelect.options[mapSelect.selectedIndex].value, mousePos.x, mousePos.y);   
-    }, false);
+		canvas.addEventListener('click', function(evt) {
+	        var mousePos = getMousePos(canvas, evt);
+	        posXField.value = mousePos.x;
+	        posYField.value = mousePos.y;
 
-	drawImage(mapSelect.options[0].value);
-}
+	        drawImage(mapSelect.options[mapSelect.selectedIndex].value, canvas, mousePos.x, mousePos.y);   
+	    }, false);
+	}
 
-function executeMapCode() {
-	imageField = document.getElementById('image_preview');
+	return {
+		init: init
+	};
+})();
 
+var mapModule = (function() {
+	var imageField = document.getElementById('image_preview');
 	var fileField = document.getElementById('form_file');
-	fileField.addEventListener('change', function() {
-		previewFile(this, ['jpg', 'jpeg', 'png']);
-	});
+	var removeLink = document.getElementById('remove_file');
+	var errorField = document.getElementById('error');
 
-	document.getElementById('remove_file').addEventListener('click', function() {
-		fileField.value = "";
-		imageField.className = "hidden";
-		imageField.removeAttribute('src');
-		this.className = "hidden";
-	});
-}
+	function init() {
+		fileField.addEventListener('change', function() {
+			previewFile(this, imageField, removeLink, errorField, ['jpg', 'jpeg', 'png']);
+		});
 
-function executeMediaCode() {
-	imageField = document.getElementById('image_preview');
-	var fileFields = document.querySelectorAll('input[id*="file"]');
-
-	for (var i = 0; i < fileFields.length; i++) {
-		fileFields[i].addEventListener('change', function() {
-			previewFile(this, getAllowedExtensions());
+		removeLink.addEventListener('click', function() {
+			fileField.value = "";
+			imageField.className = "hidden";
+			imageField.removeAttribute('src');
+			this.className = "hidden";
 		});
 	}
 
-	var removeLinks = document.getElementsByName('remove_file');
-	console.log(removeLinks);
-	document.getElementById('remove_file').addEventListener('click', function() {
-		fileField.value = "";
-		imageField.className = "hidden";
-		imageField.removeAttribute('src');
-		this.className = "hidden";
-	});
+	return {
+		init: init
+	};
+})();
 
-	document.getElementById('form_type').addEventListener('change', function() {
-		for (var i = 0; i < fileFields.length; i++) {
-			fileFields[i].value = "";
-		}
-		imageField.removeAttribute('src');
-		imageField.className = "hidden";
-		document.getElementById('remove_file').className = "hidden";
-	});
-}
+var mediaModule = (function() {
+	var removeLinks = document.getElementsByName('remove_file');
+	var imageFields = document.getElementsByName('image_preview');
+	var errorFields = document.getElementsByName('error');
+	var fileFields = document.querySelectorAll('input[id*="file"]');
+
+	function init() {
+		fileFields[0].addEventListener('change', function() {
+			previewFile(this, imageFields[0], removeLinks[0], errorFields[0], getAllowedExtensions());
+		});
+		fileFields[1].addEventListener('change', function() {
+			previewFile(this, imageFields[1], removeLinks[1], errorFields[1], getAllowedExtensions());
+		});
+
+		removeLinks[0].addEventListener('click', function() {
+			fileFields[0].value = "";
+			imageFields[0].className = "hidden";
+			imageFields[0].removeAttribute('src');
+			this.className = "hidden";
+		});
+		removeLinks[1].addEventListener('click', function() {
+			fileFields[1].value = "";
+			imageFields[1].className = "hidden";
+			imageFields[1].removeAttribute('src');
+			this.className = "hidden";
+		});
+
+		document.getElementById('form_type').addEventListener('change', function() {
+			for (var i = 0; i < fileFields.length; i++) {
+				fileFields[i].value = "";
+				imageFields[i].removeAttribute('src');
+				imageFields[i].className = "hidden";
+				removeLinks[i].className = "hidden";
+				errorFields[i].className = "hidden";
+			}
+		});
+	}
+
+	return {
+		init: init
+	};
+})();
 
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
@@ -111,7 +113,8 @@ function getMousePos(canvas, evt) {
     };
 }
 
-function drawImage(imagePath, posX = null, posY = null) {
+function drawImage(imagePath, canvas, posX = null, posY = null) {
+	var context = canvas.getContext('2d');
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	var image = new Image();
@@ -137,14 +140,14 @@ function drawImage(imagePath, posX = null, posY = null) {
 	}
 }
 
-function previewFile(input, fileTypes) {
-    if (input.files && input.files[0]) {
-    	var extension = input.files[0].name.split('.').pop().toLowerCase();
+function previewFile(inputField, imageField, removeLink, errorField, fileTypes) {
+    if (inputField.files && inputField.files[0]) {
+    	var extension = inputField.files[0].name.split('.').pop().toLowerCase();
     	var isSuccess = isSuccess = fileTypes.indexOf(extension) > -1;
 
     	if (isSuccess) {
-    		document.getElementById('remove_file').className = "";
-    		document.getElementById('error').className = "hidden";
+    		removeLink.className = "";
+    		errorField.className = "hidden";
 
     		switch (extension) {
     			case 'jpg':
@@ -155,7 +158,7 @@ function previewFile(input, fileTypes) {
 		            	imageField.className = "";
 		                imageField.setAttribute('src', e.target.result);
 		            }
-		            reader.readAsDataURL(input.files[0]);
+		            reader.readAsDataURL(inputField.files[0]);
     				break;
 				case 'mp3':
 					imageField.removeAttribute('src');
@@ -167,20 +170,20 @@ function previewFile(input, fileTypes) {
 					break;
     		}
     	} else {
-    		displayError(input, fileTypes);
+    		displayError(inputField, imageField, removeLink, errorField, fileTypes);
     	}
     }
 }
 
-function displayError(input, allowedTypes) {
-	input.value = "";
+function displayError(inputField, imageField, removeLink, errorField, allowedTypes) {
+	inputField.value = "";
 	imageField.removeAttribute('src');
 	imageField.className = "hidden";
-	document.getElementById('remove_file').className = "hidden";
+	removeLink.className = "hidden";
 	var errorMessage = "Gelieve een bestand te uploaden van volgende types: ";
 	errorMessage += allowedTypes.join(", ");
-	document.getElementById('error').innerHTML = errorMessage;
-	document.getElementById('error').className = "";
+	errorField.innerHTML = errorMessage;
+	errorField.className = "";
 }
 
 function getAllowedExtensions() {
@@ -202,3 +205,21 @@ function getAllowedExtensions() {
 
 	return types;
 }
+
+(function ($) {
+	var form = document.querySelectorAll('form');
+	
+	if (form != null) {
+		switch (form[0].id) {
+			case 'collection_form':
+				collectionItemModule.init();
+				break;
+			case 'map_form':
+				mapModule.init();
+				break;
+			case 'media_form':
+				mediaModule.init();
+				break;
+		}
+	}
+})();
