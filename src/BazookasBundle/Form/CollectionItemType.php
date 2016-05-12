@@ -50,7 +50,8 @@ class CollectionItemType extends AbstractType
                 ))
             ->add('file', FileUploadType::class, array(
                     'label' => 'Afbeelding',
-                    'required' => !$options['edit']
+                    'required' => !$options['edit'],
+                    'path' => $options['path']
                 ))
             ->add('categoryID', EntityType::class, array(
                     'class' => 'BazookasBundle:Category',

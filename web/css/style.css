@@ -1,9 +1,12 @@
+table {
+	width: 100%;
+}
+
 td, th {
   width: auto;
-  padding: 0 20px;
 }
-tr > td{
-  padding: 5px 0px;;
+tr > td, th{
+  padding: 5px 30px 5px 10px;
 }
 th{
   background: #428bca;
@@ -13,12 +16,8 @@ tr:nth-child(odd) {
   background: #ededed;
 
 }
-td a{
+td a {
   display: inline-block;
-  width: 40px;
-}
-.btn-warning{
-  margin-left: 100px;
 }
 
 canvas {

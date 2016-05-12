@@ -66,11 +66,13 @@ class MediaType extends AbstractType
                 ))
             ->add('fileNL', FileUploadType::class, array(
                     'label' => 'Media Nederlands',
-                    'required' => false
+                    'required' => false,
+                    'path' => $options['pathNL']
                 ))
             ->add('fileFR', FileUploadType::class, array(
                     'label' => 'Media Frans',
-                    'required' => false
+                    'required' => false,
+                    'path' => $options['pathFR']
                 ));
 
         return $builder->getForm();

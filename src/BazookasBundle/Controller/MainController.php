@@ -53,7 +53,7 @@ class MainController extends Controller
             $toColumn = intval($this->getHighestColumnID()) + 1;
         }
         $form = $collectionItemType->buildForm($this->createFormBuilder(), 
-            array('edit' => false, 'posX' => 0, 'posY' => 0, 'yearFrom' => 0));
+            array('edit' => false, 'posX' => 0, 'posY' => 0, 'yearFrom' => 0, 'path' => ''));
 
         $form->handleRequest($request);
 
@@ -85,7 +85,7 @@ class MainController extends Controller
         $collectionItemType = new CollectionItemType($this->getDoctrine()->getEntityManager());
         $form = $collectionItemType->buildForm($this->createFormBuilder(), 
             array('edit' => true, 'posX' => $item->getPositionX(), 'posY' => $item->getPositionY(), 
-                  'yearFrom' => $item->getYearFrom()));
+                  'yearFrom' => $item->getYearFrom(), 'path' => $item->getImageURL()));
 
         $form = $this->fillCollectionItemForm($form, $item);
 
@@ -232,7 +232,8 @@ class MainController extends Controller
     public function mediaAddAction(Request $request)
     {
         $mediaType = new MediaType();
-        $form = $mediaType->buildForm($this->createFormBuilder(), array());
+        $form = $mediaType->buildForm($this->createFormBuilder(), 
+            array('pathNL' => '', 'pathFR' => ''));
 
         $form->handleRequest($request);
 
@@ -263,7 +264,8 @@ class MainController extends Controller
         $item = $this->getDoctrine()->getRepository('BazookasBundle:Media')->find($id);
 
         $mediaType = new MediaType();
-        $form = $mediaType->buildForm($this->createFormBuilder(), array());
+        $form = $mediaType->buildForm($this->createFormBuilder(), 
+            array('pathNL' => $item->getContentURLNL(), 'pathFR' => $item->getContentURLFR()));
 
         $form = $this->fillMediaForm($form, $item);
 
@@ -461,7 +463,8 @@ class MainController extends Controller
         return $this->createFormBuilder($item)
                     ->add('file', FileUploadType::class, array(
                         'label' => 'Afbeelding',
-                        'required' => true
+                        'required' => true,
+                        'path' => $item->getImageURL()
                     ))
                     ->add('yearFrom', ChoiceType::class, array(
                           'label' => 'Jaar van',
