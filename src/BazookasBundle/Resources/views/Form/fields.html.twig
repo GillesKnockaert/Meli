@@ -4,8 +4,10 @@
     <p>Kies een locatie op de map door te klikken op de afbeelding:</p>
     <canvas id="mapCanvas" width="500" height="500"></canvas>
 
-    <input type="number" step="any" id="posX" name="posX" class="hidden" />
-    <input type="number" step="any" id="posY" name="posY" class="hidden" />
+    <input type="number" value="{{ form.vars.posX }}" step="any" id="posX" name="posX" class="hidden" />
+    <input type="number" value="{{ form.vars.posY }}" step="any" id="posY" name="posY" class="hidden" />
+
+    <input type="number" value="{{ form.vars.yearFrom }}" id="item_yearfrom" class="hidden" />
 {% endblock %}
 
 {% block file_upload_widget %}

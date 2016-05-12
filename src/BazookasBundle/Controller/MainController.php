@@ -52,7 +52,8 @@ class MainController extends Controller
         if ($toColumn == 0) {
             $toColumn = intval($this->getHighestColumnID()) + 1;
         }
-        $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
+        $form = $collectionItemType->buildForm($this->createFormBuilder(), 
+            array('edit' => false, 'posX' => 0, 'posY' => 0, 'yearFrom' => 0));
 
         $form->handleRequest($request);
 
@@ -82,7 +83,9 @@ class MainController extends Controller
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
 
         $collectionItemType = new CollectionItemType($this->getDoctrine()->getEntityManager());
-        $form = $collectionItemType->buildForm($this->createFormBuilder(), array());
+        $form = $collectionItemType->buildForm($this->createFormBuilder(), 
+            array('edit' => true, 'posX' => $item->getPositionX(), 'posY' => $item->getPositionY(), 
+                  'yearFrom' => $item->getYearFrom()));
 
         $form = $this->fillCollectionItemForm($form, $item);
 

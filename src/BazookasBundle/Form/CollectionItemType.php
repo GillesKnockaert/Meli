@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
 use BazookasBundle\Form\MapType;
 use BazookasBundle\Form\FileUploadType;
 use Doctrine\ORM\EntityManager;
@@ -48,7 +50,7 @@ class CollectionItemType extends AbstractType
                 ))
             ->add('file', FileUploadType::class, array(
                     'label' => 'Afbeelding',
-                    'required' => true
+                    'required' => !$options['edit']
                 ))
             ->add('categoryID', EntityType::class, array(
                     'class' => 'BazookasBundle:Category',
@@ -77,6 +79,9 @@ class CollectionItemType extends AbstractType
                     'choice_value' => function ($choice) {
                         return $choice;
                     },
+                    'posX' => $options['posX'],
+                    'posY' => $options['posY'],
+                    'yearFrom' => $options['yearFrom']
                 ))
             ->add('yearFrom', ChoiceType::class, array(
                     'label' => 'Jaar van',

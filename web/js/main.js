@@ -9,6 +9,13 @@ var collectionItemModule = (function() {
 	var canvas = document.getElementById('mapCanvas');
 
 	function init() {
+		var yearFrom = document.getElementById('item_yearfrom').value;
+		var posX = document.getElementById('posX').value;
+		var posY = document.getElementById('posY').value;
+		if (yearFrom != 0) {
+			showMap(yearFrom, posX, posY);
+		}
+
 		mapSelect.addEventListener('change', function(e) {
 			drawImage(e.srcElement.value, canvas);
 		});
@@ -31,6 +38,51 @@ var collectionItemModule = (function() {
 
 	        drawImage(mapSelect.options[mapSelect.selectedIndex].value, canvas, mousePos.x, mousePos.y);   
 	    }, false);
+	}
+
+	function getMousePos(canvas, evt) {
+	    var rect = canvas.getBoundingClientRect();
+	    return {
+	        x: evt.clientX - rect.left,
+	        y: evt.clientY - rect.top
+	    };
+	}
+
+	function drawImage(imagePath, canvas, posX = null, posY = null) {
+		var context = canvas.getContext('2d');
+		context.clearRect(0, 0, canvas.width, canvas.height);
+
+		var image = new Image();
+		image.src = '/' + imagePath;
+		image.onload = function(){
+			var hRatio = canvas.width  / image.width;
+		    var vRatio = canvas.height / image.height;
+		    var ratio  = Math.min(hRatio, vRatio);
+		    var centerShift_x = (canvas.width - image.width * ratio) / 2;
+		    var centerShift_y = (canvas.height - image.height * ratio) / 2;  
+		    context.clearRect(0, 0, canvas.width, canvas.height);
+		    context.drawImage(image, 0, 0, image.width, image.height, centerShift_x, 
+		    			  centerShift_y, image.width * ratio, image.height * ratio);  
+
+		    if (posX != null && posY != null) {
+				context.beginPath();
+		        context.arc(posX, posY, 5, 0, 2 * Math.PI);
+		        context.fillStyle = "#9999ff";
+		        context.fill();
+		        context.strokeStyle = "#0000ff";
+		        context.stroke();
+			}
+		}
+	}
+
+	function showMap(yearFrom, posX, posY) {
+		for (var i = 1; i < mapSelect.options.length; i++) {
+			var years = (mapSelect.options[i].text).split(' - ');
+			if (yearFrom >= parseInt(years[0]) && yearFrom <= parseInt(years[1])) {
+				mapSelect.selectedIndex = i;
+				drawImage(mapSelect.options[mapSelect.selectedIndex].value, canvas, posX, posY);
+			}
+		}
 	}
 
 	return {
@@ -104,41 +156,6 @@ var mediaModule = (function() {
 		init: init
 	};
 })();
-
-function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-    };
-}
-
-function drawImage(imagePath, canvas, posX = null, posY = null) {
-	var context = canvas.getContext('2d');
-	context.clearRect(0, 0, canvas.width, canvas.height);
-
-	var image = new Image();
-	image.src = '/' + imagePath;
-	image.onload = function(){
-		var hRatio = canvas.width  / image.width;
-	    var vRatio = canvas.height / image.height;
-	    var ratio  = Math.min(hRatio, vRatio);
-	    var centerShift_x = (canvas.width - image.width * ratio) / 2;
-	    var centerShift_y = (canvas.height - image.height * ratio) / 2;  
-	    context.clearRect(0, 0, canvas.width, canvas.height);
-	    context.drawImage(image, 0, 0, image.width, image.height, centerShift_x, 
-	    			  centerShift_y, image.width * ratio, image.height * ratio);  
-
-	    if (posX != null && posY != null) {
-			context.beginPath();
-	        context.arc(posX, posY, 5, 0, 2 * Math.PI);
-	        context.fillStyle = "#9999ff";
-	        context.fill();
-	        context.strokeStyle = "#0000ff";
-	        context.stroke();
-		}
-	}
-}
 
 function previewFile(inputField, imageField, removeLink, errorField, fileTypes) {
     if (inputField.files && inputField.files[0]) {
