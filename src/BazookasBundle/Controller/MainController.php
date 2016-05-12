@@ -354,6 +354,21 @@ class MainController extends Controller
         exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.__DIR__.'/../../../web/Export/Database/export.sql');
     }
 
+    /**
+    * @Route("/removefile")
+    */
+    public function removeFile(Request $request) {
+        $filepath = $request->query->get('file');
+        $previousUrl = $request->headers->get('referer');
+
+        if ($filepath != null && file_exists(__DIR__.'/../../../web/'.$filepath)) {
+            unlink(__DIR__.'/../../../web/'.$filepath);
+            $this->removeFileReferences($filepath);
+        }
+
+        return $this->redirect($previousUrl);
+    }
+
     private function getCollectionItemsCount() {
         $em = $this->getDoctrine()->getManager();
         return $em->createQueryBuilder()
@@ -383,6 +398,36 @@ class MainController extends Controller
                   ->addOrderBy('c.columnID', 'ASC')
                   ->getQuery()
                   ->getResult();
+    }
+
+    private function removeFileReferences($filepath) {
+        $em = $this->getDoctrine()->getManager();
+        $em->createQueryBuilder()
+           ->update('BazookasBundle:CollectionItem', 'c')
+           ->set('c.imageURL', ':value')
+           ->setParameter('value', null)
+           ->where('c.imageURL = :path')
+           ->setParameter('path', $filepath)
+           ->getQuery()
+           ->getResult();
+
+       $em->createQueryBuilder()
+           ->update('BazookasBundle:Media', 'm')
+           ->set('m.contentURLNL', ':value')
+           ->setParameter('value', null)
+           ->where('m.contentURLNL = :path')
+           ->setParameter('path', $filepath)
+           ->getQuery()
+           ->getResult();
+
+       $em->createQueryBuilder()
+           ->update('BazookasBundle:Media', 'm')
+           ->set('m.contentURLFR', ':value')
+           ->setParameter('value', null)
+           ->where('m.contentURLFR = :path')
+           ->setParameter('path', $filepath)
+           ->getQuery()
+           ->getResult();
     }
 
     private function setCollectionItemProperties($item, $data, $column = null) {

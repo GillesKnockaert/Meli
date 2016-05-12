@@ -17,8 +17,10 @@ var collectionItemModule = (function() {
 		}
 
 		var imagePath = document.getElementById('file_path').value;
-		imageField.setAttribute('src', '/' + imagePath);
-		removeLink.className = "";
+		if (imagePath != '') {
+			imageField.setAttribute('src', '/' + imagePath);
+			removeLink.className = "";
+		}
 
 		mapSelect.addEventListener('change', function(e) {
 			drawImage(e.srcElement.value, canvas);
@@ -102,8 +104,10 @@ var mapModule = (function() {
 
 	function init() {
 		var imagePath = document.getElementById('file_path').value;
-		imageField.setAttribute('src', '/' + imagePath);
-		removeLink.className = "";
+		if (imagePath != '') {
+			imageField.setAttribute('src', '/' + imagePath);
+			removeLink.className = "";
+		}
 
 		fileField.addEventListener('change', function() {
 			previewFile(this, imageField, removeLink, errorField, ['jpg', 'jpeg', 'png']);
