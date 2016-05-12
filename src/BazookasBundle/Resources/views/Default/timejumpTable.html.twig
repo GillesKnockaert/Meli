@@ -12,9 +12,9 @@
 		   		<td>{{ item.yearFrom }}</td>
 		   		<td>{{ item.yearTill }}</td>
 		   		<td>{{ item.type }}</td>
-		   		<td><a href="/meli/timejump/edit/{{ item.id }}">aanpassen</a> 
-		   			| <a href="/meli/item/delete/{{ item.id }}" 
-		   				 onclick="return confirm('Wil je dit item zeker verwijderen?');">verwijderen</a></td>
+		   		<td><a class="btn btn-warning" href="/meli/timejump/edit/{{ item.id }}"><i class="fa fa-edit fa-lg"></i></a>
+		   			 <a class="btn btn-danger" href="/meli/item/delete/{{ item.id }}"
+		   				 onclick="return confirm('Wil je dit item zeker verwijderen?');"><i class="fa fa-remove fa-lg"></i></a></td>
 		   </tr>
 	   	{% endif %}
 	{% endfor %}

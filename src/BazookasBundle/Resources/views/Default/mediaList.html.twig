@@ -18,16 +18,16 @@
 	   		<td>{{ item.type }}</td>
 	   		<td>{{ item.contentURLNL }}</td>
 	   		<td>{{ item.contentURLFR }}</td>
-	   		<td><a href="/meli/media/edit/{{ item.id }}">aanpassen</a> 
-	   			| <a href="/meli/media/delete/{{ item.id }}"
-	   				 onclick="return confirm('Wil je dit item zeker verwijderen?');">verwijderen</a></td>
+	   		<td><a class="btn btn-warning" href="/meli/media/edit/{{ item.id }}"><i class="fa fa-edit fa-lg"></i></a>
+	   				<a class="btn btn-danger" href="/meli/media/delete/{{ item.id }}"
+	   				 onclick="return confirm('Wil je dit item zeker verwijderen?');"><i class="fa fa-remove fa-lg"></i></a></td>
 	   </tr>
 	{% endfor %}
 </table>
 <br><br><br>
 
 {% if (collectionCount > 0) %}
-	<a href="/meli/media/add">Voeg media toe</a>
+	<a class="btn btn-success" href="/meli/media/add">Voeg media toe</a>
 {% else %}
 	<p>Er kunnen geen media items worden toegevoegd zonder collectie items van het type 'media'.</p>
 {% endif %}

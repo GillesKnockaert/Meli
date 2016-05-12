@@ -16,9 +16,9 @@
 		   		<td>{{ item.category.nameNL }}</td>
 		   		<td>{{ item.year }}</td>
 		   		<td>{{ item.type }}</td>
-		   		<td><a href="/meli/collectionitem/edit/{{ item.id }}">aanpassen</a> 
-		   			| <a href="/meli/item/delete/{{ item.id }}" 
-		   				 onclick="return confirm('Wil je dit item zeker verwijderen? (Media items die hieraan gekoppeld zijn worden ook verwijderd)');">verwijderen</a></td>
+		   		<td><a class="btn btn-warning" href="/meli/collectionitem/edit/{{ item.id }}"><i class="fa fa-edit fa-lg"></i></a>
+		   			 <a class="btn btn-danger" href="/meli/item/delete/{{ item.id }}"
+		   				 onclick="return confirm('Wil je dit item zeker verwijderen? (Media items die hieraan gekoppeld zijn worden ook verwijderd)');"><i class="fa fa-remove fa-lg"></i></a></td>
 		   </tr>
 	   	{% endif %}
 	{% endfor %}
@@ -26,4 +26,4 @@
 
 {# TODO: remove this button when column has 5 items #}
 <br>
-<a href="/meli/collectionitem/add/{{ columnIndex }}">Voeg item toe</a>
+<a class="btn btn-success" href="/meli/collectionitem/add/{{ columnIndex }}">Voeg item toe</a>

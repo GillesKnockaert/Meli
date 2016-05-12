@@ -1,5 +1,24 @@
 td, th {
-  width: 200px;
+  width: auto;
+  padding: 0 20px;
+}
+tr > td{
+  padding: 5px 0px;;
+}
+th{
+  background: #428bca;
+  color: white;
+}
+tr:nth-child(odd) {
+  background: #ededed;
+
+}
+td a{
+  display: inline-block;
+  width: 40px;
+}
+.btn-warning{
+  margin-left: 100px;
 }
 
 canvas {
