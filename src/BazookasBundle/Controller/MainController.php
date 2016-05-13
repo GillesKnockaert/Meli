@@ -444,9 +444,12 @@ class MainController extends Controller
         $item->setYearTill($data["yearTill"]);
         $item->setColumnID($column);
 
-        if ($_POST['posX'] !== "" && $_POST['posY'] !== "") {
+        if ($_POST['posX'] !== "0" && $_POST['posY'] !== "0") {
             $item->setPositionX($_POST['posX']);
             $item->setPositionY($_POST['posY']);
+        } else {
+            $item->setPositionX(-1);
+            $item->setPositionY(-1);
         }
 
         return $item;
