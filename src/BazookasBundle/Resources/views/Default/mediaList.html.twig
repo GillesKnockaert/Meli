@@ -18,8 +18,8 @@
 	   		<td>{{ item.type }}</td>
 	   		<td>{{ item.contentURLNL }}</td>
 	   		<td>{{ item.contentURLFR }}</td>
-	   		<td><a class="btn btn-warning" href="/meli/media/edit/{{ item.id }}"><i class="fa fa-edit fa-lg"></i></a>
-	   				<a class="btn btn-danger" href="/meli/media/delete/{{ item.id }}"
+	   		<td><a class="btn btn-warning" href={{ path('EditMedia', {'id': item.id}) }}><i class="fa fa-edit fa-lg"></i></a>
+	   				<a class="btn btn-danger" href={{ path('DeleteMedia', {'id': item.id}) }}
 	   				 onclick="return confirm('Wil je dit item zeker verwijderen?');"><i class="fa fa-remove fa-lg"></i></a></td>
 	   </tr>
 	{% endfor %}
@@ -27,7 +27,7 @@
 <br><br><br>
 
 {% if (collectionCount > 0) %}
-	<a class="btn btn-success" href="/meli/media/add">Voeg media toe</a>
+	<a class="btn btn-success" href={{ path('AddMedia') }}>Voeg media toe</a>
 {% else %}
 	<p>Er kunnen geen media items worden toegevoegd zonder mediacollecties (zie pagina 'Collectie items').</p>
 {% endif %}

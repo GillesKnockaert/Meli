@@ -45,7 +45,7 @@ class MainController extends Controller
 
 
     /**
-     * @Route("/collectionitem/add/{toColumn}", defaults={"toColumn" = 0})
+     * @Route("/collectionitem/add/{toColumn}", defaults={"toColumn" = 0}, name="AddCollectionitem")
      */
     public function collectionItemAddAction(Request $request, $toColumn) {
         $collectionItemType = new CollectionItemType($this->getDoctrine()->getEntityManager());
@@ -63,13 +63,13 @@ class MainController extends Controller
             $collectionItem = new CollectionItem();
             $collectionItem = $this->setCollectionItemProperties($collectionItem, $data, $toColumn);
 
-            $collectionItem->uploadImage();
+            $collectionItem->uploadImage($this->get('app.helper.mediautils'));
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($collectionItem);
             $em->flush();
 
-            return $this->redirect('/meli/collectionitem/list');
+            return $this->redirectToRoute('CollectionitemList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Nieuw item in kolom '.$toColumn ,'form' => $form->createView(), 
@@ -77,7 +77,7 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/collectionitem/edit/{id}")
+     * @Route("/collectionitem/edit/{id}", name="EditCollectionitem")
      */
      public function collectionItemEditAction(Request $request, $id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
@@ -95,12 +95,12 @@ class MainController extends Controller
             $data = $form->getData();
 
             $item = $this->setCollectionItemProperties($item, $data, $item->getColumnID());
-            $item->uploadImage();
+            $item->uploadImage($this->get('app.helper.mediautils'));
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
-            return $this->redirect('/meli/collectionitem/list');
+            return $this->redirectToRoute('CollectionitemList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Pas item aan' ,'form' => $form->createView(), 
@@ -108,7 +108,7 @@ class MainController extends Controller
     }
 
     /**
-    * @Route("/timejump/add")
+    * @Route("/timejump/add", name="AddTimejump")
     */
     public function timejumpAddAction(Request $request) {
         $collectionItem = new CollectionItem();
@@ -124,7 +124,7 @@ class MainController extends Controller
             $em->persist($collectionItem);
             $em->flush();
 
-            return $this->redirect('/meli/collectionitem/list');
+            return $this->redirectToRoute('CollectionitemList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Nieuwe tijdssprong' ,'form' => $form->createView(),
@@ -132,7 +132,7 @@ class MainController extends Controller
     }
 
     /**
-    * @Route("/timejump/edit/{id}")
+    * @Route("/timejump/edit/{id}", name="EditTimejump")
     */
     public function timejumpEditAction(Request $request, $id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
@@ -145,7 +145,7 @@ class MainController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
-            return $this->redirect('/meli/collectionitem/list');
+            return $this->redirectToRoute('CollectionitemList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Pas item aan' ,'form' => $form->createView(),
@@ -153,11 +153,11 @@ class MainController extends Controller
     }
 
     /**
-    * @Route("/map/add")
+    * @Route("/map/add", name="AddMap")
     */
     public function mapAddAction(Request $request) {
         $collectionItem = new CollectionItem();
-        $form = $this->buildMapForm($collectionItem);
+        $form = $this->buildMapForm($collectionItem, true);
 
         $form->handleRequest($request);
 
@@ -165,13 +165,13 @@ class MainController extends Controller
             $collectionItem->setType('map');
             $collectionItem->setColumnID(intval($this->getHighestColumnID()) + 1);
 
-            $collectionItem->uploadImage();
+            $collectionItem->uploadImage($this->get('app.helper.mediautils'));
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($collectionItem);
             $em->flush();
 
-            return $this->redirect('/meli/collectionitem/list');
+            return $this->redirectToRoute('CollectionitemList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Nieuwe map' ,'form' => $form->createView(),
@@ -179,22 +179,22 @@ class MainController extends Controller
     }
 
     /**
-    * @Route("/map/edit/{id}")
+    * @Route("/map/edit/{id}", name="EditMap")
     */
     public function mapEditAction(Request $request, $id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
 
-        $form = $this->buildMapForm($item);
+        $form = $this->buildMapForm($item, false);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $item->uploadImage();
+            $item->uploadImage($this->get('app.helper.mediautils'));
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
-            return $this->redirect('/meli/collectionitem/list');
+            return $this->redirectToRoute('CollectionitemList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Pas item aan' ,'form' => $form->createView(),
@@ -202,7 +202,7 @@ class MainController extends Controller
     }
 
     /**
-    * @Route("/item/delete/{id}")
+    * @Route("/item/delete/{id}", name="DeleteItem")
     */
     public function itemDeleteAction($id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
@@ -211,7 +211,7 @@ class MainController extends Controller
         $em->remove($item);
         $em->flush();
  
-        return $this->redirect('/meli/collectionitem/list');
+        return $this->redirectToRoute('CollectionitemList');
     }
 
     /**
@@ -227,7 +227,7 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/media/add")
+     * @Route("/media/add", name="AddMedia")
      */
     public function mediaAddAction(Request $request)
     {
@@ -243,13 +243,13 @@ class MainController extends Controller
             $media = new Media();
             $media = $this->setMediaProperties($media, $data);
 
-            $media->uploadFiles();
+            $media->uploadFiles($this->get('app.helper.mediautils'));
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($media);
             $em->flush();
 
-            return $this->redirect('/meli/media/add');
+            return $this->redirectToRoute('AddMedia');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Nieuwe media' ,'form' => $form->createView(),
@@ -257,7 +257,7 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/media/edit/{id}")
+     * @Route("/media/edit/{id}", name="EditMedia")
      */
     public function mediaEditAction(Request $request, $id)
     {
@@ -275,12 +275,12 @@ class MainController extends Controller
             $data = $form->getData();
 
             $item = $this->setMediaProperties($item, $data);
-            $item->uploadFiles();
+            $item->uploadFiles($this->get('app.helper.mediautils'));
 
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
-            return $this->redirect('/meli/media/list');
+            return $this->redirectToRoute('MediaList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Pas media aan' ,'form' => $form->createView(),
@@ -288,7 +288,7 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/media/delete/{id}")
+     * @Route("/media/delete/{id}", name="DeleteMedia")
      */
     public function mediaDeleteAction($id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:Media')->find($id);
@@ -297,7 +297,7 @@ class MainController extends Controller
         $em->remove($item);
         $em->flush();
  
-        return $this->redirect('/meli/media/list');
+        return $this->redirectToRoute('MediaList');
     }
 
     /**
@@ -355,7 +355,7 @@ class MainController extends Controller
     }
 
     /**
-    * @Route("/removefile")
+    * @Route("/removefile", name="RemoveFile")
     */
     public function removeFile(Request $request) {
         $filepath = $request->query->get('file');
@@ -507,11 +507,12 @@ class MainController extends Controller
                     ->getForm();
     }
 
-    private function buildMapForm($item) {
+    private function buildMapForm($item, $required) {
         return $this->createFormBuilder($item)
                     ->add('file', FileUploadType::class, array(
                         'label' => 'Afbeelding',
                         'required' => true,
+                        'required' => $required,
                         'path' => $item->getImageURL()
                     ))
                     ->add('yearFrom', ChoiceType::class, array(

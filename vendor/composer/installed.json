@@ -2421,5 +2421,61 @@
         ],
         "description": "Symfony PHPUnit Bridge",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "pulse00/ffmpeg-bundle",
+        "version": "0.6.0",
+        "version_normalized": "0.6.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pulse00/ffmpeg-bundle.git",
+            "reference": "43014797e87e5d79322e59973e9925a88d64f9e9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pulse00/ffmpeg-bundle/zipball/43014797e87e5d79322e59973e9925a88d64f9e9",
+            "reference": "43014797e87e5d79322e59973e9925a88d64f9e9",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.3.9 || ^7.0",
+            "php-ffmpeg/php-ffmpeg": "^0.5 || ^0.6",
+            "symfony/dependency-injection": "^2.3 || ^3.0",
+            "symfony/framework-bundle": "^2.3 || ^3.0"
+        },
+        "require-dev": {
+            "matthiasnoback/symfony-dependency-injection-test": "~0.7",
+            "phpunit/phpunit": "^4.8"
+        },
+        "time": "2016-03-07 09:47:04",
+        "type": "symfony-bundle",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Dubture\\FFmpegBundle\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Robert Gruendler",
+                "email": "r.gruendler@gmail.com"
+            }
+        ],
+        "description": "Symfony bundle to provide PHP-FFmpeg as a Symfony service (https://github.com/alchemy-fr/PHP-FFmpeg)",
+        "keywords": [
+            "audio",
+            "audio processing",
+            "avconv",
+            "avprobe",
+            "ffmpeg",
+            "ffprobe",
+            "multimedia",
+            "video",
+            "video processing"
+        ]
     }
 ]

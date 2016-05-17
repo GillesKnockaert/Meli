@@ -3,3 +3,7 @@ services:
         class: BazookasBundle\Form\MapType
     app.form.fileupload:
         class: BazookasBundle\Form\FileUploadType
+    app.helper.mediautils:
+        class: BazookasBundle\Helper\MediaUtils
+        arguments:
+            ffmpeg: "@dubture_ffmpeg.ffmpeg"

@@ -5,7 +5,6 @@ namespace BazookasBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use BazookasBundle\Helper\MediaUtils;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
@@ -506,13 +505,11 @@ class CollectionItem
     }
 
     //File upload functions
-    public function uploadImage()
+    public function uploadImage($mediaUtils)
     {
         if ($this->getFile() === null) {
             return;
         }
-
-        $mediaUtils = new MediaUtils();
 
         $this->getFile()->move(
             $mediaUtils->getUploadRootDir($this->getType()),

@@ -130,7 +130,7 @@ var mediaModule = (function() {
 	var removeLinks = document.getElementsByName('remove_file');
 	var imageFields = document.getElementsByName('image_preview');
 	var errorFields = document.getElementsByName('error');
-	var fileFields = document.querySelectorAll('input[id*="file"]');
+	var fileFields = document.querySelectorAll('input[id*="form_file"]');
 	var filePaths = document.getElementsByName('file_path');
 
 	function init() {

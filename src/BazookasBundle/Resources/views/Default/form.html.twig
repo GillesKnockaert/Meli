@@ -4,11 +4,11 @@
 
 <h1>{{ title }}</h1>   
 {% if ('media' in title) %}
-	{% set link = '/meli/media/list' %}
+	{% set link = 'MediaList' %}
 {% else %}
-	{% set link = '/meli/collectionitem/list' %}
+	{% set link = 'CollectionitemList' %}
 {% endif %}
-<a href="{{ link }}">Terug naar lijst</a>
+<a href={{ path(link) }}>Terug naar lijst</a>
 <hr>
 {{ form_start(form, {'attr': {'id': form_id}}) }}
 {{ form_widget(form) }}

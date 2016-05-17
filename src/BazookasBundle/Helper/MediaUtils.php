@@ -8,13 +8,8 @@ class MediaUtils {
 
     private $ffmpeg;
 
-    public function __construct() {
-        $this->ffmpeg = FFMpeg\FFMpeg::create(array(
-                'ffmpeg.binaries'  => __DIR__.'/../../../ffmpeg/bin/ffmpeg.exe',
-                'ffprobe.binaries' => __DIR__.'/../../../ffmpeg/bin/ffprobe.exe',
-                'timeout'          => 3600, // The timeout for the underlying process
-                'ffmpeg.threads'   => 12,   // The number of threads that FFMpeg should use
-        ));
+    public function __construct($ffmpeg) {
+        $this->ffmpeg = $ffmpeg;
     }
 
     public function createThumbnail($file) {

@@ -15,7 +15,7 @@
 		{{ block('form_widget') }}
     	<img id="image_preview" name="image_preview" />
         <input type="text" id="file_path" name="file_path" value="{{ form.vars.path }}" class="hidden" />
-        <a id="remove_file" href="/meli/removefile?file={{ form.vars.path }}" 
+        <a id="remove_file" href={{ path('RemoveFile', {'file': form.vars.path}) }}
            name="remove_file" class="hidden">Wissen</a>
         <p id="error" name="error"></p>
 	{% endspaceless %}

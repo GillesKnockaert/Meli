@@ -17,7 +17,7 @@
 		{% endfor %}
 	{% endif %}
 
-	<a href="/meli/collectionitem/add">Voeg mediacollectie toe aan nieuwe kolom</a> |
-	<a href="/meli/timejump/add">Voeg tijdssprong toe</a> |
-	<a href="/meli/map/add">Voeg nieuwe map toe</a>
+	<a href={{ path('AddCollectionitem') }}>Voeg mediacollectie toe aan nieuwe kolom</a> |
+	<a href={{ path('AddTimejump') }}>Voeg tijdssprong toe</a> |
+	<a href={{ path('AddMap') }}>Voeg nieuwe map toe</a>
 {% endblock %}
