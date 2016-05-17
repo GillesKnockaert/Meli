@@ -81,7 +81,7 @@ swiftmailer:
 
 # Ffmpeg Configuration
 dubture_f_fmpeg:
-    ffmpeg_binary: C:\Program Files\ffmpeg\bin\ffmpeg.exe
-    ffprobe_binary: C:\Program Files\ffmpeg\bin\ffprobe.exe
+    ffmpeg_binary: "%ffmpeg_path%"
+    ffprobe_binary: "%ffprobe_path%"
     binary_timeout: 300 # Use 0 for infinite
     threads_count: 4

@@ -17,3 +17,7 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    # ffmpeg binary parameters
+    ffmpeg_path:       path/to/ffmpeg_binary
+    ffprobe_path:      path/to/ffprobe_binary
