@@ -8,7 +8,6 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
-    site_base_url: http://office.bazookas.be/meli/001/web/
 
 framework:
     #esi:             ~

@@ -7,4 +7,4 @@ services:
         class: BazookasBundle\Helper\MediaUtils
         arguments:
             ffmpeg: "@dubture_ffmpeg.ffmpeg"
-            siteUrl: %site_base_url%
+            siteUrl: %kernel.root_dir%

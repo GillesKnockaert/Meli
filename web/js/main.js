@@ -7,6 +7,7 @@ var collectionItemModule = (function() {
 	var posXField = document.getElementById('posX');
 	var posYField = document.getElementById('posY');
 	var canvas = document.getElementById('mapCanvas');
+	var homeUrl = document.getElementById('home_url');
 
 	function init() {
 		var yearFrom = document.getElementById('item_yearfrom').value;
@@ -18,7 +19,7 @@ var collectionItemModule = (function() {
 
 		var imagePath = document.getElementById('file_path').value;
 		if (imagePath != '') {
-			imageField.setAttribute('src', '/' + imagePath);
+			imageField.setAttribute('src', homeUrl.getAttribute('data') + imagePath);
 			removeLink.className = "";
 		}
 
@@ -59,7 +60,8 @@ var collectionItemModule = (function() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		var image = new Image();
-		image.src = '/' + imagePath;
+		image.src = homeUrl.getAttribute('data') + imagePath;
+		console.log(image.src);
 		image.onload = function() {
 			var hRatio = canvas.width  / image.width;
 		    var vRatio = canvas.height / image.height;
@@ -101,11 +103,12 @@ var mapModule = (function() {
 	var fileField = document.getElementById('form_file');
 	var removeLink = document.getElementById('remove_file');
 	var errorField = document.getElementById('error');
+	var homeUrl = document.getElementById('home_url');
 
 	function init() {
 		var imagePath = document.getElementById('file_path').value;
 		if (imagePath != '') {
-			imageField.setAttribute('src', '/' + imagePath);
+			imageField.setAttribute('src', homeUrl.getAttribute('data') + imagePath);
 			removeLink.className = "";
 		}
 
@@ -132,6 +135,7 @@ var mediaModule = (function() {
 	var errorFields = document.getElementsByName('error');
 	var fileFields = document.querySelectorAll('input[id*="form_file"]');
 	var filePaths = document.getElementsByName('file_path');
+	var homeUrl = document.getElementById('home_url');
 
 	function init() {
 		fileFields[0].addEventListener('change', function() {
@@ -162,7 +166,7 @@ var mediaModule = (function() {
 			var imageExtensions = ['jpg', 'jpeg', 'png'];
 			if (filePath != '') {
 				if (imageExtensions.indexOf(extension) > -1) {
-					imageFields[i].setAttribute('src', '/' + filePath);
+					imageFields[i].setAttribute('src', homeUrl.getAttribute('data') + filePath);
 				} else {
 					var p = document.createElement("P");
 					var text = document.createTextNode(filePath);
@@ -211,6 +215,7 @@ function previewFile(inputField, imageField, removeLink, errorField, fileTypes) 
 		            reader.readAsDataURL(inputField.files[0]);
     				break;
 				case 'mp3':
+				case 'wmv':
 					imageField.removeAttribute('src');
 					imageField.className = "hidden";
 					break;
@@ -243,7 +248,7 @@ function getAllowedExtensions() {
 
 	switch (selectedType) {
 		case 'audio':
-			types = ['mp3'];
+			types = ['mp3', 'wmv'];
 			break;
 		case 'video':
 			types = ['mp4'];

@@ -510,7 +510,7 @@ class CollectionItem
         if ($this->getFile() === null) {
             return;
         }
-
+        
         $this->getFile()->move(
             $mediaUtils->getUploadRootDir($this->getType()),
             $this->getFile()->getClientOriginalName()

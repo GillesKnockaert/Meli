@@ -25,7 +25,9 @@ class MainController extends Controller
      */
     public function indexAction()
     {
-        // replace this example code with whatever you need
+        ini_set("upload_max_filesize","500M");
+        ini_set("post_max_size","500M");
+        
         return $this->render('BazookasBundle:Default:home.html.twig');
     }
 
@@ -350,10 +352,10 @@ class MainController extends Controller
         $user     = $this->getParameter('database_user');
         $password = $this->getParameter('database_password');
         $database = $this->getParameter('database_name');
-        $siteUrl  = $this->getParameter('site_base_url');
+        $siteUrl  = $this->get('kernel')->getRootDir();
+        $webRoot  = realpath($siteUrl.'/../web').'/';
 
-        //does this work on office?
-        exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.$siteUrl.'Export/Database/export.sql');
+        exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.$webRoot.'Export/Database/export.sql');
     }
 
     /**
@@ -362,10 +364,11 @@ class MainController extends Controller
     public function removeFile(Request $request) {
         $filepath = $request->query->get('file');
         $previousUrl = $request->headers->get('referer');
-        $siteUrl  = $this->getParameter('site_base_url');
+        $siteUrl = $this->get('kernel')->getRootDir();
+        $webRoot = realpath($siteUrl.'/../web').'/';
 
-        if ($filepath != null && file_exists($siteUrl.$filepath)) {
-            unlink($siteUrl.$filepath);
+        if ($filepath != null && file_exists($webRoot.$filepath)) {      
+            unlink($webRoot.$filepath);
             $this->removeFileReferences($filepath);
         }
 

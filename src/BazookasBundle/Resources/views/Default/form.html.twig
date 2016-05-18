@@ -9,6 +9,7 @@
 	{% set link = 'CollectionitemList' %}
 {% endif %}
 <a href={{ path(link) }}>Terug naar lijst</a>
+<input id="home_url" data="{{ url('Home') }}" class="hidden" />
 <hr>
 {{ form_start(form, {'attr': {'id': form_id}}) }}
 {{ form_widget(form) }}
