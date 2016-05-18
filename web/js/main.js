@@ -61,7 +61,6 @@ var collectionItemModule = (function() {
 
 		var image = new Image();
 		image.src = homeUrl.getAttribute('data') + imagePath;
-		console.log(image.src);
 		image.onload = function() {
 			var hRatio = canvas.width  / image.width;
 		    var vRatio = canvas.height / image.height;
