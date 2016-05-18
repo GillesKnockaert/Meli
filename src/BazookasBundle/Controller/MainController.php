@@ -249,7 +249,7 @@ class MainController extends Controller
             $em->persist($media);
             $em->flush();
 
-            return $this->redirectToRoute('AddMedia');
+            return $this->redirectToRoute('MediaList');
         }
         return $this->render('BazookasBundle:Default:form.html.twig', 
           array('title' => 'Nieuwe media' ,'form' => $form->createView(),
@@ -350,8 +350,10 @@ class MainController extends Controller
         $user     = $this->getParameter('database_user');
         $password = $this->getParameter('database_password');
         $database = $this->getParameter('database_name');
+        $siteUrl  = $this->getParameter('site_base_url');
 
-        exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.__DIR__.'/../../../web/Export/Database/export.sql');
+        //does this work on office?
+        exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.$siteUrl.'Export/Database/export.sql');
     }
 
     /**
@@ -360,9 +362,10 @@ class MainController extends Controller
     public function removeFile(Request $request) {
         $filepath = $request->query->get('file');
         $previousUrl = $request->headers->get('referer');
+        $siteUrl  = $this->getParameter('site_base_url');
 
-        if ($filepath != null && file_exists(__DIR__.'/../../../web/'.$filepath)) {
-            unlink(__DIR__.'/../../../web/'.$filepath);
+        if ($filepath != null && file_exists($siteUrl.$filepath)) {
+            unlink($siteUrl.$filepath);
             $this->removeFileReferences($filepath);
         }
 

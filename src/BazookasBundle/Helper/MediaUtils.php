@@ -7,9 +7,11 @@ use FFMpeg;
 class MediaUtils {
 
     private $ffmpeg;
+    private $siteUrl;
 
-    public function __construct($ffmpeg) {
+    public function __construct($ffmpeg, $siteUrl) {
         $this->ffmpeg = $ffmpeg;
+        $this->siteUrl = $siteUrl;
     }
 
     public function createThumbnail($file) {
@@ -36,7 +38,7 @@ class MediaUtils {
     }
 
     public function getUploadRootDir($fileType) {
-        return __DIR__.'/../../../web/'.$this->getUploadDir($fileType);
+        return $this->siteUrl.$this->getUploadDir($fileType);
     }
 
     public function getUploadDir($fileType) {
