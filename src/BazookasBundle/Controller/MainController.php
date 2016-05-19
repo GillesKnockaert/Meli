@@ -20,14 +20,16 @@ use \RecursiveIteratorIterator;
 
 class MainController extends Controller
 {
+    public function __construct() {
+        ini_set("upload_max_filesize","500M");
+        ini_set("post_max_size","500M");
+    }
+
     /**
      * @Route("/", name="Home")
      */
     public function indexAction()
-    {
-        ini_set("upload_max_filesize","500M");
-        ini_set("post_max_size","500M");
-        
+    {      
         return $this->render('BazookasBundle:Default:home.html.twig');
     }
 
@@ -355,7 +357,14 @@ class MainController extends Controller
         $siteUrl  = $this->get('kernel')->getRootDir();
         $webRoot  = realpath($siteUrl.'/../web').'/';
 
-        exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.$webRoot.'Export/Database/export.sql');
+        if ($this->exec_enabled()) {
+            exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.$webRoot.'Export/Database/export.sql');
+        }
+    }
+
+    private function exec_enabled() {
+        $disabled = explode(', ', ini_get('disable_functions'));
+        return !in_array('exec', $disabled);
     }
 
     /**
