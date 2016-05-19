@@ -350,15 +350,16 @@ class MainController extends Controller
     }
 
     private function exportDatabase() {
-        $host     = $this->getParameter('database_host');
-        $user     = $this->getParameter('database_user');
-        $password = $this->getParameter('database_password');
-        $database = $this->getParameter('database_name');
-        $siteUrl  = $this->get('kernel')->getRootDir();
-        $webRoot  = realpath($siteUrl.'/../web').'/';
+        $host      = $this->getParameter('database_host');
+        $user      = $this->getParameter('database_user');
+        $password  = $this->getParameter('database_password');
+        $database  = $this->getParameter('database_name');
+        $mysqldump = $this->getParameter('mysqldump_path');
+        $siteUrl   = $this->get('kernel')->getRootDir();
+        $webRoot   = realpath($siteUrl.'/../web').'/';
 
         if ($this->exec_enabled()) {
-            exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > "'.$webRoot.'Export/Database/export.sql"');
+            exec($mysqldump.' --user='.$user.' --password='.$password.' --host="'.$host.'" "'.$database.'" > "'.$webRoot.'Export/Database/export.sql"');
         }
     }
 

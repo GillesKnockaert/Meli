@@ -14,3 +14,6 @@ parameters:
     #ffmpeg binary parameters
     ffmpeg_path: C:\Program Files\ffmpeg\bin\ffmpeg.exe
     ffprobe_path: C:\Program Files\ffmpeg\bin\ffprobe.exe
+
+    #mysqldump local path
+    mysqldump_path: C:\wamp\bin\mysql\mysql5.6.17\bin\mysqldump
