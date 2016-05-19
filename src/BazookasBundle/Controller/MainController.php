@@ -301,6 +301,7 @@ class MainController extends Controller
 
     /**
     * @Route("/export", name="ExportFiles")
+    * @Route("/export/", name="ExportFilesTrailingSlash")
     */
     public function exportFiles() {
         $this->exportDatabase();
