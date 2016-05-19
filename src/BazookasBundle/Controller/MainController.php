@@ -358,7 +358,7 @@ class MainController extends Controller
         $webRoot  = realpath($siteUrl.'/../web').'/';
 
         if ($this->exec_enabled()) {
-            exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > '.$webRoot.'Export/Database/export.sql');
+            exec('mysqldump --user="'.$user.'" --password="'.$password.'" --host="'.$host.'" "'.$database.'" > "'.$webRoot.'Export/Database/export.sql"');
         }
     }
 
