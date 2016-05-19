@@ -20,16 +20,11 @@ use \RecursiveIteratorIterator;
 
 class MainController extends Controller
 {
-    public function __construct() {
-        ini_set("upload_max_filesize","500M");
-        ini_set("post_max_size","500M");
-    }
-
     /**
      * @Route("/", name="Home")
      */
     public function indexAction()
-    {      
+    {
         return $this->render('BazookasBundle:Default:home.html.twig');
     }
 
@@ -43,7 +38,7 @@ class MainController extends Controller
         $repository = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem');
         $collectionItems = $repository->findAll();
 
-        return $this->render('BazookasBundle:Default:collectionList.html.twig', 
+        return $this->render('BazookasBundle:Default:collectionList.html.twig',
           array('highestColumn' => intval($this->getHighestColumnID()), 'columns' => $columnTypes, 'items' => $collectionItems));
     }
 
@@ -56,7 +51,7 @@ class MainController extends Controller
         if ($toColumn == 0) {
             $toColumn = intval($this->getHighestColumnID()) + 1;
         }
-        $form = $collectionItemType->buildForm($this->createFormBuilder(), 
+        $form = $collectionItemType->buildForm($this->createFormBuilder(),
             array('edit' => false, 'posX' => 0, 'posY' => 0, 'yearFrom' => 0, 'path' => ''));
 
         $form->handleRequest($request);
@@ -75,8 +70,8 @@ class MainController extends Controller
 
             return $this->redirectToRoute('CollectionitemList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Nieuw item in kolom '.$toColumn ,'form' => $form->createView(), 
+        return $this->render('BazookasBundle:Default:form.html.twig',
+          array('title' => 'Nieuw item in kolom '.$toColumn ,'form' => $form->createView(),
                 'form_id' => 'collection_form'));
     }
 
@@ -87,8 +82,8 @@ class MainController extends Controller
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
 
         $collectionItemType = new CollectionItemType($this->getDoctrine()->getEntityManager());
-        $form = $collectionItemType->buildForm($this->createFormBuilder(), 
-            array('edit' => true, 'posX' => $item->getPositionX(), 'posY' => $item->getPositionY(), 
+        $form = $collectionItemType->buildForm($this->createFormBuilder(),
+            array('edit' => true, 'posX' => $item->getPositionX(), 'posY' => $item->getPositionY(),
                   'yearFrom' => $item->getYearFrom(), 'path' => $item->getImageURL()));
 
         $form = $this->fillCollectionItemForm($form, $item);
@@ -106,8 +101,8 @@ class MainController extends Controller
 
             return $this->redirectToRoute('CollectionitemList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
-          array('title' => 'Pas item aan' ,'form' => $form->createView(), 
+        return $this->render('BazookasBundle:Default:form.html.twig',
+          array('title' => 'Pas item aan' ,'form' => $form->createView(),
                 'form_id' => 'collection_form'));
     }
 
@@ -130,7 +125,7 @@ class MainController extends Controller
 
             return $this->redirectToRoute('CollectionitemList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
+        return $this->render('BazookasBundle:Default:form.html.twig',
           array('title' => 'Nieuwe tijdssprong' ,'form' => $form->createView(),
                 'form_id' => 'timejump_form'));
     }
@@ -151,7 +146,7 @@ class MainController extends Controller
 
             return $this->redirectToRoute('CollectionitemList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
+        return $this->render('BazookasBundle:Default:form.html.twig',
           array('title' => 'Pas item aan' ,'form' => $form->createView(),
                 'form_id' => 'timejump_form'));
     }
@@ -177,7 +172,7 @@ class MainController extends Controller
 
             return $this->redirectToRoute('CollectionitemList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
+        return $this->render('BazookasBundle:Default:form.html.twig',
           array('title' => 'Nieuwe map' ,'form' => $form->createView(),
                 'form_id' => 'map_form'));
     }
@@ -200,7 +195,7 @@ class MainController extends Controller
 
             return $this->redirectToRoute('CollectionitemList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
+        return $this->render('BazookasBundle:Default:form.html.twig',
           array('title' => 'Pas item aan' ,'form' => $form->createView(),
                 'form_id' => 'map_form'));
     }
@@ -210,11 +205,11 @@ class MainController extends Controller
     */
     public function itemDeleteAction($id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:CollectionItem')->find($id);
- 
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($item);
         $em->flush();
- 
+
         return $this->redirectToRoute('CollectionitemList');
     }
 
@@ -226,7 +221,7 @@ class MainController extends Controller
         $repository = $this->getDoctrine()->getRepository('BazookasBundle:Media');
         $mediaItems = $repository->findAll();
 
-        return $this->render('BazookasBundle:Default:mediaList.html.twig', 
+        return $this->render('BazookasBundle:Default:mediaList.html.twig',
           array('items' => $mediaItems, 'collectionCount' => $this->getCollectionItemsCount()));
     }
 
@@ -236,7 +231,7 @@ class MainController extends Controller
     public function mediaAddAction(Request $request)
     {
         $mediaType = new MediaType();
-        $form = $mediaType->buildForm($this->createFormBuilder(), 
+        $form = $mediaType->buildForm($this->createFormBuilder(),
             array('pathNL' => '', 'pathFR' => ''));
 
         $form->handleRequest($request);
@@ -255,7 +250,7 @@ class MainController extends Controller
 
             return $this->redirectToRoute('MediaList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
+        return $this->render('BazookasBundle:Default:form.html.twig',
           array('title' => 'Nieuwe media' ,'form' => $form->createView(),
                 'form_id' => 'media_form'));
     }
@@ -268,7 +263,7 @@ class MainController extends Controller
         $item = $this->getDoctrine()->getRepository('BazookasBundle:Media')->find($id);
 
         $mediaType = new MediaType();
-        $form = $mediaType->buildForm($this->createFormBuilder(), 
+        $form = $mediaType->buildForm($this->createFormBuilder(),
             array('pathNL' => $item->getContentURLNL(), 'pathFR' => $item->getContentURLFR()));
 
         $form = $this->fillMediaForm($form, $item);
@@ -286,7 +281,7 @@ class MainController extends Controller
 
             return $this->redirectToRoute('MediaList');
         }
-        return $this->render('BazookasBundle:Default:form.html.twig', 
+        return $this->render('BazookasBundle:Default:form.html.twig',
           array('title' => 'Pas media aan' ,'form' => $form->createView(),
                 'form_id' => 'media_form'));
     }
@@ -296,11 +291,11 @@ class MainController extends Controller
      */
     public function mediaDeleteAction($id) {
         $item = $this->getDoctrine()->getRepository('BazookasBundle:Media')->find($id);
- 
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($item);
         $em->flush();
- 
+
         return $this->redirectToRoute('MediaList');
     }
 
@@ -377,7 +372,7 @@ class MainController extends Controller
         $siteUrl = $this->get('kernel')->getRootDir();
         $webRoot = realpath($siteUrl.'/../web').'/';
 
-        if ($filepath != null && file_exists($webRoot.$filepath)) {      
+        if ($filepath != null && file_exists($webRoot.$filepath)) {
             unlink($webRoot.$filepath);
             $this->removeFileReferences($filepath);
         }

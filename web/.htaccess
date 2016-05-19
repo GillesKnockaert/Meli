@@ -1,3 +1,9 @@
+# overwrite php ini settings
+php_value upload_max_filesize 500M
+php_value post_max_size 500M
+php_value max_execution_time 200
+php_value max_input_time 200
+
 # Use the front controller as index file. It serves as a fallback solution when
 # every other rewrite/redirect fails (e.g. in an aliased environment without
 # mod_rewrite). Additionally, this reduces the matching process for the
