@@ -31,7 +31,8 @@
         "php-ffmpeg/php-ffmpeg": "~0.5",
         "symfony/assetic-bundle": "^2.8",
         "components/jquery": "^2.2",
-        "pulse00/ffmpeg-bundle": "^0.6"
+        "pulse00/ffmpeg-bundle": "^0.6",
+        "liip/imagine-bundle": "^1.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

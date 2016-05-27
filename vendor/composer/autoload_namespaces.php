@@ -10,6 +10,7 @@ return array(
     'SensioLabs\\Security' => array($vendorDir . '/sensiolabs/security-checker'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Neutron' => array($vendorDir . '/neutron/temporary-filesystem/src'),
+    'Imagine' => array($vendorDir . '/imagine/imagine/lib'),
     'FFMpeg' => array($vendorDir . '/php-ffmpeg/php-ffmpeg/src'),
     'Evenement' => array($vendorDir . '/evenement/evenement/src'),
     'Doctrine\\ORM\\' => array($vendorDir . '/doctrine/orm/lib'),

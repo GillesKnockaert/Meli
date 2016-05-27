@@ -28,14 +28,14 @@ class CollectionItem
     /**
      * @var string
      *
-     * @ORM\Column(name="titleNL", type="string", length=50, nullable=true)
+     * @ORM\Column(name="titleNL", type="string", length=255, nullable=true)
      */
     private $titleNL;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="titleFR", type="string", length=50, nullable=true)
+     * @ORM\Column(name="titleFR", type="string", length=255, nullable=true)
      */
     private $titleFR;
 
@@ -56,7 +56,7 @@ class CollectionItem
     /**
      * @var string
      *
-     * @ORM\Column(name="imageURL", type="string", length=100, nullable=true)
+     * @ORM\Column(name="imageURL", type="string", length=255, nullable=true)
      */
     private $imageURL;
 
@@ -510,7 +510,7 @@ class CollectionItem
         if ($this->getFile() === null) {
             return;
         }
-        
+
         $this->getFile()->move(
             $mediaUtils->getUploadRootDir($this->getType()),
             $this->getFile()->getClientOriginalName()

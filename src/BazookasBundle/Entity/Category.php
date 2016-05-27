@@ -29,14 +29,14 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="nameNL", type="string", length=50, nullable=true)
+     * @ORM\Column(name="nameNL", type="string", length=255, nullable=true)
      */
     private $nameNL;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="nameFR", type="string", length=50, nullable=true)
+     * @ORM\Column(name="nameFR", type="string", length=255, nullable=true)
      */
     private $nameFR;
 
@@ -228,24 +228,24 @@ class Category
         return $this->endColor;
     }
 
-    public function getCollectionItems() 
+    public function getCollectionItems()
     {
         return $this->collectionItems;
     }
 
-    public function setCollectionItems($items) 
+    public function setCollectionItems($items)
     {
         $this->collectionItems = $items;
     }
 
-    public function addCollectionItem($item) 
+    public function addCollectionItem($item)
     {
         $item->setCategory($this);
         $this->collectionItems->add($item);
         return $this;
     }
 
-    public function removeCollectionItem($item) 
+    public function removeCollectionItem($item)
     {
         $item->setCategory(null);
         $this->collectionItems->removeElement($item);

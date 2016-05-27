@@ -26,6 +26,7 @@ return array(
     'Sensio\\Bundle\\FrameworkExtraBundle\\' => array($vendorDir . '/sensio/framework-extra-bundle'),
     'Sensio\\Bundle\\DistributionBundle\\' => array($vendorDir . '/sensio/distribution-bundle'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Liip\\ImagineBundle\\' => array($vendorDir . '/liip/imagine-bundle'),
     'Incenteev\\ParameterHandler\\' => array($vendorDir . '/incenteev/composer-parameter-handler'),
     'Dubture\\FFmpegBundle\\' => array($vendorDir . '/pulse00/ffmpeg-bundle'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),

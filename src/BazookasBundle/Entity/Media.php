@@ -26,14 +26,14 @@ class Media
     /**
      * @var string
      *
-     * @ORM\Column(name="titleNL", type="string", length=50, nullable=true)
+     * @ORM\Column(name="titleNL", type="string", length=255, nullable=true)
      */
     private $titleNL;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="titleFR", type="string", length=50, nullable=true)
+     * @ORM\Column(name="titleFR", type="string", length=255, nullable=true)
      */
     private $titleFR;
 
@@ -61,14 +61,14 @@ class Media
     /**
      * @var string
      *
-     * @ORM\Column(name="contentURLNL", type="string", length=100, nullable=true)
+     * @ORM\Column(name="contentURLNL", type="string", length=255, nullable=true)
      */
     private $contentURLNL;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="contentURLFR", type="string", length=100, nullable=true)
+     * @ORM\Column(name="contentURLFR", type="string", length=255, nullable=true)
      */
     private $contentURLFR;
 
